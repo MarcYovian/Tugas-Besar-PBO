@@ -13,6 +13,7 @@ import java.awt.RenderingHints;
 import com.main.frRegist;
 import com.main.frLogin;
 import com.main.Main;
+import javax.swing.JFrame;
 
 /**
  *
@@ -39,7 +40,7 @@ public class Login extends javax.swing.JPanel {
 
         jLabel2.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Jika anda belum melakukan registrasi");
+        jLabel2.setText("Jika anda sudah melakukan registrasi");
 
         jLabel3.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
@@ -93,8 +94,7 @@ public class Login extends javax.swing.JPanel {
 
     private void btnRegistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistActionPerformed
         new frLogin().setVisible(true);
-        frame = frRegist.frame;
-        frame.dispose();
+        this.dispose();
     }//GEN-LAST:event_btnRegistActionPerformed
     @Override
     protected void paintChildren(Graphics g) {
@@ -104,6 +104,10 @@ public class Login extends javax.swing.JPanel {
         g2.setPaint(gp);
         g2.fillRect(0, 0, getWidth(), getHeight());
         super.paintChildren(g);
+    }
+    public void dispose() {
+        JFrame parent = (JFrame) this.getTopLevelAncestor();
+        parent.dispose();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
