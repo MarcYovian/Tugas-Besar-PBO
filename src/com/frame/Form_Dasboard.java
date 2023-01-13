@@ -29,18 +29,10 @@ public class Form_Dasboard extends javax.swing.JPanel {
         JPanel p = new JPanel();
         p.setBackground(Color.WHITE);
         spTable.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
-        table.addRow(new Object[]{1, "Marcell", "Sabun", StatusType.RECEIVING_AND_PUTAWAY});
-        table.addRow(new Object[]{2, "Indra", "Sabun", StatusType.PICKING});
-        table.addRow(new Object[]{3, "Hola", "Sabun", StatusType.PACKING});
-        table.addRow(new Object[]{4, "testl", "Sabun", StatusType.RECEIVING_AND_PUTAWAY});
-        
-        
-//        spTable.setVerticalScrollBar(new ScrollBar());
-//        spTable.getVerticalScrollBar().setBackground(Color.WHITE);
-//        spTable.getViewport().setBackground(Color.WHITE);
-//        JPanel p = new JPanel();
-//        p.setBackground(new Color(237, 237, 235));
-//        spTable.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
+        table.addRow(new Object[]{1, "Marcell", "Sabun", StatusType.INCOMING});
+        table.addRow(new Object[]{2, "Indra", "Sabun", StatusType.OUTGOING});
+        table.addRow(new Object[]{3, "Hola", "Sabun", StatusType.INCOMING});
+        table.addRow(new Object[]{4, "testl", "Sabun", StatusType.TRANSFERRED});
     }
 
     @SuppressWarnings("unchecked")
