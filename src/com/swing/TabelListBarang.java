@@ -8,9 +8,8 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class Tabel extends JTable {
-
-    public Tabel() {
+public class TabelListBarang extends JTable{
+    public TabelListBarang(){
         setShowHorizontalLines(true);
         setGridColor(new Color(230,230,230));
         setRowHeight(40);
@@ -19,7 +18,7 @@ public class Tabel extends JTable {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                   tableHeader header = new tableHeader(value + "");
-                  if (column == 6) {
+                  if (column == 5) {
                       header.setHorizontalAlignment(JLabel.CENTER);
                   }      
                   return header;
@@ -28,7 +27,6 @@ public class Tabel extends JTable {
         setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                if( column != 6 ){
                     Component com = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                     com.setBackground(Color.WHITE);
                     setBorder(noFocusBorder);
@@ -38,12 +36,7 @@ public class Tabel extends JTable {
                         com.setForeground(new Color(102, 102, 102));
                     }
                     return com;
-                } else {
-                    StatusType type = (StatusType)value;
-                    CellStatus cell = new CellStatus(type);
-                    return cell;
-                }
-            }
+             }
          });
     }
     

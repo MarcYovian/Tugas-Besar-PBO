@@ -1,9 +1,12 @@
 
 package com.main;
 
+import com.connection.DatabaseConnection;
 import com.swing.MyTextField;
 import java.awt.Color;
 import javax.swing.ImageIcon;
+import java.sql.*;
+import javax.swing.JOptionPane;
 
 public class frLogin extends javax.swing.JFrame {
     
@@ -147,6 +150,20 @@ public class frLogin extends javax.swing.JFrame {
         String trueUser = "admin";
         String truePass = "admin";
         
+        try {
+            DatabaseConnection db = new DatabaseConnection();
+            String query = "SELECT * FROM user WHERE username = '" + user + "' AND password = '" + pass + "'";
+            ResultSet rs = db.getData(query);
+            if(rs.next()){
+                new Main().setVisible(true);
+                this.dispose();
+            }else{ // nder, edit nde bawah iki yo hehe
+                JOptionPane.showMessageDialog(null, "Username atau password salah", "Login Error", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+        }
+        /*
         if(user.equals(trueUser)&&pass.equals(truePass)){
             new Main().setVisible(true);
             this.dispose();
@@ -175,7 +192,7 @@ public class frLogin extends javax.swing.JFrame {
             }
             txtUsername.setText("");
             txtPassword.setText("");
-        }
+        }*/
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsernameActionPerformed

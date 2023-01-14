@@ -23,16 +23,16 @@ public class Form_Dasboard extends javax.swing.JPanel {
         card2.setData(new model_Card("Stack", 5));
         
         /* Table */
-        spTable.setVerticalScrollBar(new ScrollBar());
-        spTable.getVerticalScrollBar().setBackground(Color.WHITE);
-        spTable.getViewport().setBackground(Color.WHITE);   
+        spTabel.setVerticalScrollBar(new ScrollBar());
+        spTabel.getVerticalScrollBar().setBackground(Color.WHITE);
+        spTabel.getViewport().setBackground(Color.WHITE);   
         JPanel p = new JPanel();
         p.setBackground(Color.WHITE);
-        spTable.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
-        table.addRow(new Object[]{1, "Marcell", "Sabun", StatusType.INCOMING});
-        table.addRow(new Object[]{2, "Indra", "Sabun", StatusType.OUTGOING});
-        table.addRow(new Object[]{3, "Hola", "Sabun", StatusType.INCOMING});
-        table.addRow(new Object[]{4, "testl", "Sabun", StatusType.TRANSFERRED});
+        spTabel.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
+        tabel.addRow(new Object[]{1, "01", "Marcell","Sabun","1","02/02/21", StatusType.INCOMING});
+        tabel.addRow(new Object[]{2, "02", "Marcell","Sabun","2","02/02/21", StatusType.OUTGOING});
+        tabel.addRow(new Object[]{3, "03", "Marcell","Sabun","3","02/02/21", StatusType.TRANSFERRED});
+        tabel.addRow(new Object[]{4, "04", "Marcell","Sabun","4","02/02/21", StatusType.RETURNED});
     }
 
     @SuppressWarnings("unchecked")
@@ -46,8 +46,8 @@ public class Form_Dasboard extends javax.swing.JPanel {
         card2 = new com.component.card();
         pnlTable = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        spTable = new javax.swing.JScrollPane();
-        table = new com.swing.Tabel();
+        spTabel = new javax.swing.JScrollPane();
+        tabel = new com.swing.Tabel();
 
         setBackground(new java.awt.Color(252, 251, 246));
         setAutoscrolls(true);
@@ -76,23 +76,15 @@ public class Form_Dasboard extends javax.swing.JPanel {
         jLabel2.setForeground(new java.awt.Color(118, 118, 118));
         jLabel2.setText("History Warehouse");
 
-        table.setModel(new javax.swing.table.DefaultTableModel(
+        tabel.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Id", "Name", "Description", "Status"
+                "id_Pencatatan", "nama_Stack", "nama_User", "nama_Barang", "id_Pelanggan", "Tanggal", "Status"
             }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        spTable.setViewportView(table);
+        ));
+        spTabel.setViewportView(tabel);
 
         javax.swing.GroupLayout pnlTableLayout = new javax.swing.GroupLayout(pnlTable);
         pnlTable.setLayout(pnlTableLayout);
@@ -104,7 +96,7 @@ public class Form_Dasboard extends javax.swing.JPanel {
                     .addGroup(pnlTableLayout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(spTable))
+                    .addComponent(spTabel))
                 .addContainerGap())
         );
         pnlTableLayout.setVerticalGroup(
@@ -113,8 +105,8 @@ public class Form_Dasboard extends javax.swing.JPanel {
                 .addGap(20, 20, 20)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
-                .addGap(20, 20, 20))
+                .addComponent(spTabel, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -132,7 +124,7 @@ public class Form_Dasboard extends javax.swing.JPanel {
                 .addGap(20, 20, 20))
             .addGroup(layout.createSequentialGroup()
                 .addGap(105, 105, 105)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE)
                 .addGap(105, 105, 105))
         );
         layout.setVerticalGroup(
@@ -158,8 +150,8 @@ public class Form_Dasboard extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel pnlTable;
-    private javax.swing.JScrollPane spTable;
-    private com.swing.Tabel table;
+    private javax.swing.JScrollPane spTabel;
+    private com.swing.Tabel tabel;
     private com.component.Welcome welcome1;
     // End of variables declaration//GEN-END:variables
 }
