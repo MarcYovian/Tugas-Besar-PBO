@@ -44,7 +44,7 @@ public class Main extends javax.swing.JFrame {
         setForm(new Form_Dasboard());
     }
     
-    private void setForm(JComponent com) {
+    public void setForm(JComponent com) {
         mainPanel.removeAll();
         mainPanel.add(com);
         mainPanel.repaint();

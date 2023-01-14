@@ -56,6 +56,7 @@
                               <Component id="txtUsername" min="-2" pref="238" max="-2" attributes="0"/>
                               <Component id="txtPassword" min="-2" pref="238" max="-2" attributes="0"/>
                               <Component id="txtEmail" alignment="1" min="-2" pref="238" max="-2" attributes="0"/>
+                              <Component id="txtName" alignment="1" min="-2" pref="238" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="173" max="-2" attributes="0"/>
                       </Group>
@@ -77,12 +78,14 @@
                   <EmptySpace min="-2" pref="121" max="-2" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
+                  <Component id="txtName" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="txtEmail" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
                   <Component id="txtUsername" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="txtPassword" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                   <Component id="btnRegist" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -144,7 +147,15 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtUsernameActionPerformed"/>
           </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="txtUsername.setPrefixIcon(new ImageIcon(getClass().getResource(&quot;/com/icon/user.png&quot;)));"/>
+            <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="txtUsername.setPrefixIcon(new ImageIcon(getClass().getResource(&quot;/com/icon/user-Login.png&quot;)));"/>
+          </AuxValues>
+        </Component>
+        <Component class="com.swing.MyTextField" name="txtName">
+          <Properties>
+            <Property name="hint" type="java.lang.String" value="Name"/>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="txtName.setPrefixIcon(new ImageIcon(getClass().getResource(&quot;/com/icon/user-Login.png&quot;)));"/>
           </AuxValues>
         </Component>
       </SubComponents>
