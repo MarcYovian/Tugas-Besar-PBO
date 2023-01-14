@@ -9,18 +9,34 @@ public class Main extends javax.swing.JFrame {
 
     private Form_Dasboard dasboard;
     private Form_ProductList productList;
+    private Form_Stack stackList;
+    private Form_Warehouse warehouseList;
+    private Form_User userList;
+    private Form_Customer customer;
     public Main() {
         initComponents();
         dasboard = new Form_Dasboard();
         productList = new Form_ProductList();
+        stackList = new Form_Stack();
+        warehouseList = new Form_Warehouse();
+        userList = new Form_User();
+        customer = new Form_Customer();
         menu.addEventMenuSelected(new EventMenuSelected() {
             @Override
             public void selected(int index) {
-                System.out.println(index);
+//                System.out.println(index);
                 if (index == 0) {
                     setForm(dasboard);
                 } else if (index == 1) {
                     setForm(productList);
+                }else if (index == 2) {
+                    setForm(stackList);
+                }else if (index == 3) {
+                    setForm(warehouseList);
+                }else if (index == 4) {
+                    setForm(userList);
+                }else if (index == 5) {
+                    setForm(customer);
                 }
             }
         });

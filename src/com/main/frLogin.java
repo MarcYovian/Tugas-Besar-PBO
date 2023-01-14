@@ -123,7 +123,7 @@ public class frLogin extends javax.swing.JFrame {
         btnLogin.setForeground(new Color(250, 250, 250));
         btnLogin.setText("Masuk");
         btnLogin.setFont(new java.awt.Font("Poppins", 0, 13));
-        txtUsername.setPrefixIcon(new ImageIcon(getClass().getResource("/com/icon/user.png")));
+        txtUsername.setPrefixIcon(new ImageIcon(getClass().getResource("/com/icon/user-Login.png")));
         txtPassword.setPrefixIcon(new ImageIcon(getClass().getResource("/com/icon/pass.png")));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

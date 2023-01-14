@@ -33,7 +33,7 @@ public class Form_ProductList extends javax.swing.JPanel {
         setBackground(new java.awt.Color(252, 251, 246));
 
         jLabel1.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/icon/package.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/icon/package-Black.png"))); // NOI18N
         jLabel1.setText("Product List");
 
         btnTambah.setText("Tambah Barang");

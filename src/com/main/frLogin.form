@@ -174,7 +174,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtUsernameActionPerformed"/>
           </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="txtUsername.setPrefixIcon(new ImageIcon(getClass().getResource(&quot;/com/icon/user.png&quot;)));"/>
+            <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="txtUsername.setPrefixIcon(new ImageIcon(getClass().getResource(&quot;/com/icon/user-Login.png&quot;)));"/>
           </AuxValues>
         </Component>
         <Component class="com.swing.MyPasswordField" name="txtPassword">
