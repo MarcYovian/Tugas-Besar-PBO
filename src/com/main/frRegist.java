@@ -1,15 +1,25 @@
 package com.main;
 
+import com.connection.DatabaseConnection;
+import com.glasspanepopup.model.Model_Message;
+import com.glasspanepopup.popup.Message;
+import com.sun.jdi.connect.spi.Connection;
 import com.swing.MyTextField;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
 import javax.swing.ImageIcon;
+import swinger.glasspanepopup.GlassPanePopup;
+import java.sql.ResultSet;
+
 
 
 public class frRegist extends javax.swing.JFrame {
     public static frRegist frame;
     public frRegist() {
         initComponents();
+        GlassPanePopup.install(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -20,10 +30,11 @@ public class frRegist extends javax.swing.JFrame {
         btnRegist = new com.swing.MyButton();
         jLabel1 = new javax.swing.JLabel();
         login1 = new com.component.Login();
-        txtPassword = new com.swing.MyPasswordField();
         txtEmail = new com.swing.MyTextField();
         txtUsername = new com.swing.MyTextField();
         txtName = new com.swing.MyTextField();
+        txtPassword = new com.swing.MyPasswordField();
+        txtPasswordRep = new com.swing.MyPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -39,13 +50,6 @@ public class frRegist extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Poppins", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 153, 102));
         jLabel1.setText("Daftar");
-
-        txtPassword.setHint("Password");
-        txtPassword.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtPasswordActionPerformed(evt);
-            }
-        });
 
         txtEmail.setHint("Email");
         txtEmail.addActionListener(new java.awt.event.ActionListener() {
@@ -63,6 +67,10 @@ public class frRegist extends javax.swing.JFrame {
 
         txtName.setHint("Name");
 
+        txtPassword.setHint("Password");
+
+        txtPasswordRep.setHint("Reply Password");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -77,9 +85,10 @@ public class frRegist extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtPasswordRep, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(173, 173, 173))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(btnRegist, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -99,9 +108,11 @@ public class frRegist extends javax.swing.JFrame {
                 .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(13, 13, 13)
                 .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(13, 13, 13)
                 .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
+                .addGap(13, 13, 13)
+                .addComponent(txtPasswordRep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(btnRegist, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -110,10 +121,11 @@ public class frRegist extends javax.swing.JFrame {
         btnRegist.setForeground(new Color(250, 250, 250));
         btnRegist.setText("Daftar");
         btnRegist.setFont(new java.awt.Font("Poppins", 0, 13));
-        txtPassword.setPrefixIcon(new ImageIcon(getClass().getResource("/com/icon/pass.png")));
         txtEmail.setPrefixIcon(new ImageIcon(getClass().getResource("/com/icon/mail.png")));
         txtUsername.setPrefixIcon(new ImageIcon(getClass().getResource("/com/icon/user-Login.png")));
         txtName.setPrefixIcon(new ImageIcon(getClass().getResource("/com/icon/user-Login.png")));
+        txtPassword.setPrefixIcon(new ImageIcon(getClass().getResource("/com/icon/pass.png")));
+        txtPasswordRep.setPrefixIcon(new ImageIcon(getClass().getResource("/com/icon/pass.png")));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -131,16 +143,61 @@ public class frRegist extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRegistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistActionPerformed
+        Message ms = new Message();
+        String nama = txtName.getText();
+        String email = txtEmail.getText();
+        String user = txtUsername.getText();
+        String pass = txtPassword.getText();
+        String pass1 = txtPasswordRep.getText();
+        Connection con = null;
+        PreparedStatement pstmt = null;
         
+        
+        try {
+            
+        } catch (Exception e) {
+        }
+        
+        /*   Password Berbeda   */
+        if(pass1.equals(pass)){
+            DatabaseConnection db = new DatabaseConnection();
+            String s = "SELECT username FROM user WHERE username ='"+user+"' LIMIT 1";
+            ResultSet rs = db.getData(s);
+            try {
+                
+                /*   Cek Username Sama   */
+                if (rs.next()) {
+                    new Exception();
+                }
+                else{
+                    String insertQuery = "INSERT INTO user(nama_User, email, username, password, isUsed, isAdmin) VALUES (?,?,?,?,?,?)";
+                    db.query(insertQuery, nama,email,user,pass,0,1);
+                }
+            } catch (Exception e) {
+                    ms.setData(new Model_Message("Error","Username Already Exists"));
+                    ms.eventOK(new ActionListener(){
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                                GlassPanePopup.closePopupLast();
+                        }
+                    });
+                    GlassPanePopup.showPopup(ms);
+            }
+        }else{
+            ms.setData(new Model_Message("Password", "Password Tidak Sesuai"));
+            ms.eventOK(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                        GlassPanePopup.closePopupLast();
+                }
+            });
+            GlassPanePopup.showPopup(ms);
+        }
     }//GEN-LAST:event_btnRegistActionPerformed
 
     private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_myTextField1ActionPerformed
-
-    private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtPasswordActionPerformed
 
     private void txtEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmailActionPerformed
         // TODO add your handling code here:
@@ -195,6 +252,7 @@ public class frRegist extends javax.swing.JFrame {
     private com.swing.MyTextField txtEmail;
     private com.swing.MyTextField txtName;
     private com.swing.MyPasswordField txtPassword;
+    private com.swing.MyPasswordField txtPasswordRep;
     private com.swing.MyTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 }

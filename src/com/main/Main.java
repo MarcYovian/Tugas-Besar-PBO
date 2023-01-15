@@ -3,6 +3,7 @@ package com.main;
 import com.frame.*;
 import com.event.*;
 import javax.swing.JComponent;
+import swinger.glasspanepopup.GlassPanePopup;
 
 
 public class Main extends javax.swing.JFrame {
@@ -15,6 +16,7 @@ public class Main extends javax.swing.JFrame {
     private Form_Customer customer;
     public Main() {
         initComponents();
+        GlassPanePopup.install(this);
         dasboard = new Form_Dasboard();
         productList = new Form_ProductList();
         stackList = new Form_Stack();

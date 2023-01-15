@@ -1,9 +1,14 @@
 package com.connection;
 
+import com.glasspanepopup.model.Model_Message;
+import com.glasspanepopup.popup.Message;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.*;
 import  java.util.logging.Level;
 import  java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import swinger.glasspanepopup.GlassPanePopup;
 
 public class DatabaseConnection {
     private String dbuser = "root";
@@ -40,11 +45,22 @@ public class DatabaseConnection {
         return rs;
     }
 
-    public void query(String sQLString) {
-        try {
-            int i = stmt.executeUpdate(sQLString);
+    public void query(String sQLString, Object... args) {
+        try (PreparedStatement pstmt = con.prepareStatement(sQLString)){
+            for(int i = 0; i < args.length; i++) {
+                pstmt.setObject(i + 1, args[i]);
+            }
+            int i = pstmt.executeUpdate();
             if(i>0){
-                JOptionPane.showMessageDialog(null,"Data Tersimpan");
+                    Message ms = new Message();
+                    ms.setData(new Model_Message("Berhasil Register","Selamat, Akun telah dibuat \n Silahkan menunggu untuk di confirmasi oleh Owner!!!"));
+                    ms.eventOK(new ActionListener(){
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                                GlassPanePopup.closePopupLast();
+                        }
+                    });
+                    GlassPanePopup.showPopup(ms);
             }else{
                 JOptionPane.showMessageDialog(null,"Error");
             }
