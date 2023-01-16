@@ -1,6 +1,7 @@
 
 package com.frame;
 
+import com.glasspanepopup.insert.DataStorageInsProduct;
 import com.glasspanepopup.insert.insertProduct;
 import com.insert.PopupInsert;
 import com.insert.popUp;
@@ -132,7 +133,8 @@ public class Form_ProductList extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
-            insertProduct ins = new insertProduct();
+            DataStorageInsProduct data = new DataStorageInsProduct();
+            insertProduct ins = new insertProduct(data);
             ins.eventNEXT(new ActionListener(){
                 @Override
                 public void actionPerformed(ActionEvent e) {
