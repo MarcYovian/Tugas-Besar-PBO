@@ -4,7 +4,12 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/DEWATA/Documents/NetBeansProjects/gitHub/AplikasiPergudangan/src/com/main/frLogin.java</file>
-            <file>file:/C:/Users/DEWATA/Documents/NetBeansProjects/gitHub/AplikasiPergudangan/src/com/main/frRegist.java</file>
+            <file>file:/C:/Users/DEWATA/Documents/NetBeansProjects/gitHub/AplikasiPergudangan/src/com/glasspanepopup/popup/Message.java</file>
+            <file>file:/C:/Users/DEWATA/Documents/NetBeansProjects/gitHub/AplikasiPergudangan/src/com/main/Main.java</file>
+            <file>file:/C:/Users/DEWATA/Documents/NetBeansProjects/gitHub/AplikasiPergudangan/src/com/glasspanepopup/insert/insertProduct.java</file>
+            <file>file:/C:/Users/DEWATA/Documents/NetBeansProjects/gitHub/AplikasiPergudangan/src/com/component/Login.java</file>
+            <file>file:/C:/Users/DEWATA/Documents/NetBeansProjects/gitHub/AplikasiPergudangan/src/com/glasspanepopup/insert/insertProduct2.java</file>
+            <file>file:/C:/Users/DEWATA/Documents/NetBeansProjects/gitHub/AplikasiPergudangan/src/com/glasspanepopup/model/Model_Message.java</file>
             <file>file:/C:/Users/DEWATA/Documents/NetBeansProjects/gitHub/AplikasiPergudangan/src/com/connection/DatabaseConnection.java</file>
         </group>
     </open-files>

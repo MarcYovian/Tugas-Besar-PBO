@@ -50,6 +50,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Submit"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSubmitActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="btnSubmit.setBackground(new Color(255,153,102));&#xa;btnSubmit.setForeground(new Color(250, 250, 250));&#xa;btnSubmit.setText(&quot;Submit&quot;);&#xa;btnSubmit.setFont(new java.awt.Font(&quot;Poppins&quot;, 0, 13));"/>
       </AuxValues>

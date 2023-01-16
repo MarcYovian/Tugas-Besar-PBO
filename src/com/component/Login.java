@@ -94,7 +94,7 @@ public class Login extends javax.swing.JPanel {
 
     private void btnRegistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistActionPerformed
         new frLogin().setVisible(true);
-        this.dispose();
+        this.dispose();                         
     }//GEN-LAST:event_btnRegistActionPerformed
     @Override
     protected void paintChildren(Graphics g) {

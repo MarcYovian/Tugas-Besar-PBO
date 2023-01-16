@@ -151,27 +151,31 @@ public class frRegist extends javax.swing.JFrame {
         String pass1 = txtPasswordRep.getText();
         Connection con = null;
         PreparedStatement pstmt = null;
-        
-        
-        try {
-            
-        } catch (Exception e) {
-        }
-        
+  
         /*   Password Berbeda   */
-        if(pass1.equals(pass)){
-            DatabaseConnection db = new DatabaseConnection();
-            String s = "SELECT username FROM user WHERE username ='"+user+"' LIMIT 1";
-            ResultSet rs = db.getData(s);
-            try {
-                
-                /*   Cek Username Sama   */
-                if (rs.next()) {
-                    new Exception();
-                }
-                else{
-                    String insertQuery = "INSERT INTO user(nama_User, email, username, password, isUsed, isAdmin) VALUES (?,?,?,?,?,?)";
-                    db.query(insertQuery, nama,email,user,pass,0,1);
+        try {
+                if(pass1.equals(pass)){
+                        DatabaseConnection db = new DatabaseConnection();
+                        String s = "SELECT username FROM user WHERE username ='"+user+"';";
+                        ResultSet rs = db.getData(s);
+
+                        /*   Cek Username Sama   */
+                        if (rs.next()) {
+                            new Exception();
+                        }
+                        else{
+                            String insertQuery = "INSERT INTO user(nama_User, email, username, password, isUsed, isAdmin) VALUES (?,?,?,?,?,?)";
+                            db.query(insertQuery, nama,email,user,pass,0,1);                           
+                        }
+                }else{
+                    ms.setData(new Model_Message("Password", "Password Tidak Sesuai"));
+                    ms.eventOK(new ActionListener(){
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                                GlassPanePopup.closePopupLast();
+                        }
+                    });
+                    GlassPanePopup.showPopup(ms);
                 }
             } catch (Exception e) {
                     ms.setData(new Model_Message("Error","Username Already Exists"));
@@ -183,16 +187,6 @@ public class frRegist extends javax.swing.JFrame {
                     });
                     GlassPanePopup.showPopup(ms);
             }
-        }else{
-            ms.setData(new Model_Message("Password", "Password Tidak Sesuai"));
-            ms.eventOK(new ActionListener(){
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                        GlassPanePopup.closePopupLast();
-                }
-            });
-            GlassPanePopup.showPopup(ms);
-        }
     }//GEN-LAST:event_btnRegistActionPerformed
 
     private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myTextField1ActionPerformed
@@ -243,6 +237,8 @@ public class frRegist extends javax.swing.JFrame {
             }
         });
     }
+    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.swing.MyButton btnRegist;

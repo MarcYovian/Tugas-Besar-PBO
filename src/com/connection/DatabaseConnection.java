@@ -5,12 +5,10 @@ import com.glasspanepopup.popup.Message;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
-import  java.util.logging.Level;
-import  java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import swinger.glasspanepopup.GlassPanePopup;
 
-public class DatabaseConnection {
+public class DatabaseConnection{
     private String dbuser = "root";
     private String dbpsswd = "";
     private Statement stmt = null;
@@ -33,6 +31,7 @@ public class DatabaseConnection {
 
     }
 
+       
     public ResultSet getData(String sQLString) {
         try {
             rs = stmt.executeQuery(sQLString);
@@ -58,12 +57,15 @@ public class DatabaseConnection {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                                 GlassPanePopup.closePopupLast();
+                                
                         }
                     });
                     GlassPanePopup.showPopup(ms);
             }else{
                 JOptionPane.showMessageDialog(null,"Error");
             }
+            
+            
         } catch (Exception e) {
             // TODO: handle exception
             JOptionPane.showMessageDialog(null, "Error : "+ e.getMessage(), 
@@ -71,3 +73,6 @@ public class DatabaseConnection {
         }
     }
 }
+
+
+

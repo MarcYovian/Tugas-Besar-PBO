@@ -103,9 +103,20 @@ public class insertProduct extends javax.swing.JPanel {
                 System.out.println(name);
                 
                  insertProduct2 ins = new insertProduct2();
+                 ins.eventBACK(new ActionListener(){
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            GlassPanePopup.closePopupLast();
+                        }
+                     
+                 });
                  GlassPanePopup.showPopup(ins);
     }//GEN-LAST:event_btnNextActionPerformed
-     
+    
+    public void eventNEXT(ActionListener event){
+        btnNext.addActionListener(event);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.swing.MyButton btnNext;
     private javax.swing.JLabel jLabel1;

@@ -174,7 +174,15 @@ public class frLogin extends javax.swing.JFrame {
                 GlassPanePopup.showPopup(ms);
                 
             }else{ // nder, edit nde bawah iki yo hehe
-                JOptionPane.showMessageDialog(null, "Username atau password salah", "Login Error", JOptionPane.WARNING_MESSAGE);
+                Message ms = new Message();
+                ms.setData(new Model_Message("Username / Password Not Found", "Username dan Password tidak ditemukan\n mohon untuk melakukan pendaftaran terlebih dahulu!"));
+                ms.eventOK(new ActionListener(){
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                            GlassPanePopup.closePopupLast();
+                    }
+                });
+                GlassPanePopup.showPopup(ms);
             }
         } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);

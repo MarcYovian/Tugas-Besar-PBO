@@ -1,14 +1,29 @@
 package com.glasspanepopup.insert;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.RoundRectangle2D;
 import swinger.glasspanepopup.GlassPanePopup;
 
 public class insertProduct2 extends javax.swing.JPanel {
 //    insertProduct2 panel = new insertProduct2();
     public insertProduct2(){ 
         initComponents();
+        setOpaque(false);
+    }
+    
+    @Override
+    protected void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(getBackground());
+        g2.fill(new RoundRectangle2D.Double(0,0, getWidth(), getHeight(), 15, 15));
+        g2.dispose();
+        super.paintComponent(g);
     }
 
     @SuppressWarnings("unchecked")
@@ -20,6 +35,11 @@ public class insertProduct2 extends javax.swing.JPanel {
         txtTest = new com.swing.MyTextField();
 
         btnSubmit.setText("Submit");
+        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSubmitActionPerformed(evt);
+            }
+        });
 
         btnBack.setText("Back");
         btnBack.addActionListener(new java.awt.event.ActionListener() {
@@ -74,16 +94,35 @@ public class insertProduct2 extends javax.swing.JPanel {
                 data.setJenis_Barang(test);
                 
                 insertProduct ins = new insertProduct();
+                ins.eventNEXT(new ActionListener(){
+                     @Override
+                     public void actionPerformed(ActionEvent e) {
+                         GlassPanePopup.closePopupLast();
+                     }
+                    
+                });
                 GlassPanePopup.showPopup(ins);
     }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+        GlassPanePopup.closePopupLast();
+    }//GEN-LAST:event_btnSubmitActionPerformed
     
     public void eventSubmit(ActionListener event){
         btnSubmit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               GlassPanePopup.closePopupAll();
+                GlassPanePopup.closePopupAll();
             }
         });
+    }
+    
+    public void eventBACK(ActionListener event){
+        btnBack.addActionListener(event);
+    }
+    
+    public void eventSUBMIT(ActionListener event){
+        btnSubmit.addActionListener(event);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

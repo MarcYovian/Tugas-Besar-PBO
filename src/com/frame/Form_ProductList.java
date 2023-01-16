@@ -9,6 +9,7 @@ import com.swing.ScrollBar;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import swinger.glasspanepopup.GlassPanePopup;
@@ -131,9 +132,15 @@ public class Form_ProductList extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
-            insertProduct insert = new insertProduct();
-            Main main = new Main();
-            main.setForm(new insertProduct());
+            insertProduct ins = new insertProduct();
+            ins.eventNEXT(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    GlassPanePopup.closePopupLast();
+                }
+                
+            });
+            GlassPanePopup.showPopup(ins);
     }//GEN-LAST:event_btnTambahActionPerformed
 
 
