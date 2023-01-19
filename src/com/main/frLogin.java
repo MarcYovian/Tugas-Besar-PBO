@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 import swinger.glasspanepopup.GlassPanePopup;
 
 public class frLogin extends javax.swing.JFrame {
-    
+    frLogin frLogin = this;
     public frLogin() {
         initComponents();
         GlassPanePopup.install(this);
@@ -160,20 +160,30 @@ public class frLogin extends javax.swing.JFrame {
             DatabaseConnection db = new DatabaseConnection();
             String query = "SELECT * FROM user WHERE username = '" + user + "' AND password = '" + pass + "'";
             ResultSet rs = db.getData(query);
-            if(rs.next()){
+            if(rs.next() && rs.getInt("isUsed")==1){
                 Message ms = new Message();
                 ms.setData(new Model_Message("Berhasil Login", "Username dan Password Anda Benar"));
                 ms.eventOK(new ActionListener(){
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         new Main().setVisible(true);
-                        new frLogin().setVisible(false); // masih belum bisa
+                        frLogin.dispose();
                         GlassPanePopup.closePopupLast();
                     }
                 });
                 GlassPanePopup.showPopup(ms);
                 
-            }else{ // nder, edit nde bawah iki yo hehe
+            }else if(rs.next() && rs.getInt("isUsed")==0){ // error, cari solusi dulu ges
+                Message ms = new Message();
+                ms.setData(new Model_Message("Akun belum bisa digunakan", "Mohon maaf, akun belum bisa digunakan\n Silahkan tunggu sampai akun anda telah di Setujui oleh Owner!"));
+                ms.eventOK(new ActionListener(){
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                            GlassPanePopup.closePopupLast();
+                    }
+                });
+                GlassPanePopup.showPopup(ms);
+            }else{// nder, edit nde bawah iki yo hehe
                 Message ms = new Message();
                 ms.setData(new Model_Message("Username / Password Not Found", "Username dan Password tidak ditemukan\n mohon untuk melakukan pendaftaran terlebih dahulu!"));
                 ms.eventOK(new ActionListener(){
