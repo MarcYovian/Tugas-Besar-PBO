@@ -1,9 +1,14 @@
 package com.frame;
 
+import com.glasspanepopup.Stack.insertStack;
+import com.main.Main;
 import com.swing.ScrollBar;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 public class Form_Stack extends javax.swing.JPanel {
 
@@ -17,6 +22,14 @@ public class Form_Stack extends javax.swing.JPanel {
         p.setBackground(Color.WHITE);
         spTabel.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
         
+        btnTambah.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                insertStack insert = new insertStack();
+                Main main = (Main) SwingUtilities.getWindowAncestor(Form_Stack.this);
+                main.setForm(insert);
+            }
+        });
     }
 
  

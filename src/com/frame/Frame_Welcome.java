@@ -14,6 +14,7 @@ public class Frame_Welcome extends javax.swing.JPanel {
     public Frame_Welcome() {
         initComponents();
         setOpaque(false);
+        
         lbProfile.setData(new model_NameProfile("Marcellinus Yovian"));
     }
 

@@ -1,9 +1,14 @@
 package com.frame;
 
+import com.glasspane.popup.warehouse.Insert_Warehouse;
+import com.main.Main;
 import com.swing.ScrollBar;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 public class Form_Warehouse extends javax.swing.JPanel {
 
@@ -18,6 +23,14 @@ public class Form_Warehouse extends javax.swing.JPanel {
         p.setBackground(Color.WHITE);
         spTabel.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
         
+        btnTambah.addActionListener(new  ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Insert_Warehouse wh = new Insert_Warehouse();
+                Main main = (Main) SwingUtilities.getWindowAncestor(Form_Warehouse.this);
+                main.setForm(wh);
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")

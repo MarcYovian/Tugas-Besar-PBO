@@ -1,8 +1,8 @@
 
 package com.frame;
 
-import com.glasspanepopup.insert.DataStorageInsProduct;
-import com.glasspanepopup.insert.insertProduct;
+import com.glasspanepopup.Barang.DataStorageInsProduct;
+import com.glasspanepopup.Barang.insertProduct;
 import com.insert.PopupInsert;
 import com.insert.popUp;
 import com.main.Main;
@@ -13,9 +13,11 @@ import java.awt.event.ActionListener;
 import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import swinger.glasspanepopup.GlassPanePopup;
 
 public class Form_ProductList extends javax.swing.JPanel {
+    private DataStorageInsProduct data;
     public Form_ProductList() {
         initComponents();
        
@@ -25,6 +27,16 @@ public class Form_ProductList extends javax.swing.JPanel {
         JPanel p = new JPanel();
         p.setBackground(Color.WHITE);
         spTabel.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
+        
+        btnTambah.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                data = new DataStorageInsProduct();
+                insertProduct insert = new insertProduct(data);
+                Main main = (Main) SwingUtilities.getWindowAncestor(Form_ProductList.this);
+                main.setForm(insert);
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -133,16 +145,6 @@ public class Form_ProductList extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
-            DataStorageInsProduct data = new DataStorageInsProduct();
-            insertProduct ins = new insertProduct(data);
-            ins.eventNEXT(new ActionListener(){
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    GlassPanePopup.closePopupLast();
-                }
-                
-            });
-            GlassPanePopup.showPopup(ins);
     }//GEN-LAST:event_btnTambahActionPerformed
 
 
