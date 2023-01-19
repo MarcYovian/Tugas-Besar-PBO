@@ -1,63 +1,12 @@
 package com.glasspane.popup.warehouse;
 
-import com.frame.Form_Warehouse;
-import com.glasspanepopup.model.Model_Message;
-import com.glasspanepopup.popup.Message;
-import com.glasspanepopup.popup.Message_Confirmation;
-import com.main.Main;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import swinger.glasspanepopup.GlassPanePopup;
 
-public class Insert_Warehouse extends javax.swing.JPanel {
+public class Edit_Warehouse extends javax.swing.JPanel {
 
-    public Insert_Warehouse() {
+    public Edit_Warehouse() {
         initComponents();
-        
-        btnSubmit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    String namaGudang = txtNamGudang.getText();
-                    String alamat = txtAlamat.getText();
-                    if(namaGudang.equals("") || alamat.equals("")){
-                        throw new Exception();
-                    }
-                    System.out.println(namaGudang + "\n" + alamat);
-                    // to do : insert query to database here & check if namaGudang already exists
-                    Message_Confirmation msc = new Message_Confirmation();
-                    msc.setData(new Model_Message("Konfirmasi", "Apakah anda yakin ingin menambahkan gudang Baru ?"));
-                    msc.eventSUBMIT(new ActionListener(){
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            GlassPanePopup.closePopupLast();
-                            // to do : insert query to database here & check if stack already exists
-
-                            System.out.println(namaGudang + "\n" + alamat);
-                            Form_Warehouse wh = new Form_Warehouse();
-                            Main main = (Main) SwingUtilities.getWindowAncestor(Insert_Warehouse.this);
-                            main.setForm(wh);
-                        }
-                    });
-                    GlassPanePopup.showPopup(msc);
-                    
-                    // set panel Form_Warehouse
-                } catch (Exception ex) {
-                    Message ms = new Message();
-                    ms.setData(new Model_Message("Error", "Mohon untuk mengisi semau field yang ada"));
-                    ms.eventOK(new ActionListener(){
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            GlassPanePopup.closePopupLast();
-                        }
-                    });
-                    GlassPanePopup.showPopup(ms);
-                }
-            }
-        });
     }
 
     @SuppressWarnings("unchecked")
@@ -123,7 +72,7 @@ public class Insert_Warehouse extends javax.swing.JPanel {
                 .addComponent(txtNamGudang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(60, 60, 60)
                 .addComponent(txtAlamat, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(66, 66, 66)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
                 .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(98, Short.MAX_VALUE))
         );

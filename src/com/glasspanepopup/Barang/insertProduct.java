@@ -23,13 +23,13 @@ public class insertProduct extends javax.swing.JPanel {
         int idPelanggan = data.getIdPelanggan();
         String status = data.getStatus();
         //set value of combo box based on data
-        if (idStack !=  -1) {
+        if (idStack !=  0) {
             cbIdStack.setSelectedIndex(idStack);
         }
         if (date != null && !date.equals("")) {
             txtDate.setText(date);
         }
-        if (idPelanggan !=  -1) {
+        if (idPelanggan !=  0) {
             cbIdPelanggan.setSelectedIndex(idPelanggan);
         }
         if (status != null && !status.equals("")) {
@@ -44,7 +44,7 @@ public class insertProduct extends javax.swing.JPanel {
                     int idPelanggan = cbIdPelanggan.getSelectedIndex();
                     String status = (String)cbStatus.getSelectedItem();
                     System.out.println(idStack+ " " + idPelanggan+ " " + date+ " " + status);
-                    if (idStack < 0 || date.equals("") || idPelanggan < 0 || status.equals("")) {
+                    if (idStack <= 0 || date.equals("") || idPelanggan <= 0 || status.equals("")) {
                         throw new Exception();
                     }
                     data.setId_Stack(idStack);

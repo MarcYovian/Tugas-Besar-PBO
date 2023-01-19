@@ -1,5 +1,7 @@
 package com.glasspanepopup.Barang;
 
+import com.glasspanepopup.model.Model_Message;
+import com.glasspanepopup.popup.Message_Confirmation;
 import com.main.Main;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -21,14 +23,36 @@ public class insertProduct2 extends javax.swing.JPanel {
 //        setOpaque(false);
         
         this.data = data;
-        
+        String namaProduk = data.getNama_Barang();
+        String Kategori = data.getJenis_Barang();
+        int jumlah = data.getJumlah();
+        String deskripsi = data.getDescription();
         // Set text fields value based on data
-//        txtTest.setText(data.getJenis_Barang()); // edit disini
+        if(namaProduk!=null&&!namaProduk.equals("")){
+            txtName.setText(namaProduk);
+        }
+        if(Kategori!=null&&!Kategori.equals("")){
+            txtKategori.setText(Kategori);
+        }
+        if (jumlah>0) {
+            txtJumlah.setText(String.valueOf(jumlah));
+        }
+        if(deskripsi==null&&!deskripsi.equals("")){
+            txtDescription.setText(deskripsi);
+        }
         
         btnBack.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-//                data.setJenis_Barang(txtTest.getText()); //edit di sini
+                String namaProduk = txtName.getText();
+                String Kategori = txtKategori.getText();
+                int jumlah = Integer.parseInt(txtJumlah.getText());
+                String deskripsi = txtDescription.getText();
+                
+                data.setNama_Barang(namaProduk);
+                data.setJenis_Barang(Kategori);
+                data.setJumlah(jumlah);
+                data.setDescription(deskripsi);
                 
                 // switch panel 1
                 insertProduct ins = new insertProduct(data);
@@ -42,8 +66,38 @@ public class insertProduct2 extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
             // to do : check if field/dataStorage in this panel is null (using try Catch) 
+            try{
+                String namaProduk = txtName.getText();
+                String Kategori = txtKategori.getText();
+                int jumlah = Integer.parseInt(txtJumlah.getText());
+                String deskripsi = txtDescription.getText();
+                
+                if (namaProduk.equals("")||Kategori.equals("")||jumlah<=0||deskripsi.equals("")) {
+                    throw new Exception();
+                }
+                
+                data.setNama_Barang(namaProduk);
+                data.setJenis_Barang(Kategori);
+                data.setJumlah(jumlah);
+                data.setDescription(deskripsi);
+                
+                Message_Confirmation msc = new Message_Confirmation();
+                msc.setData(new Model_Message("Konfirmasi", "Apakah anda yakin ingin menambahkan produk ke dalam Gudang ?"));
+                msc.eventSUBMIT(new ActionListener(){
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        GlassPanePopup.closePopupLast();
+                        // to do : insert query to database(dataStorageInsProduct here & check if namaGudang already exists
+                        
+                        System.out.println(data.getNama_Barang() + data.getJenis_Barang());
+                    }
+                });
+                GlassPanePopup.showPopup(msc);
+                
+            }catch (Exception ex) {
+                    
+            }
             
-            // to do : insert query to database here & check if namaGudang already exists
 
             // to do : switch panel to Form_ProductList and refresh table Form_ProductList
             }
@@ -227,13 +281,6 @@ public class insertProduct2 extends javax.swing.JPanel {
         GlassPanePopup.closePopupAll();
     }//GEN-LAST:event_btnSubmitActionPerformed
 
-    public void eventBACK(ActionListener event){
-        btnBack.addActionListener(event);
-    }
-    
-    public void eventSUBMIT(ActionListener event){
-        btnSubmit.addActionListener(event);
-    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.swing.MyButton btnBack;

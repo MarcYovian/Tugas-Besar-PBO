@@ -113,7 +113,7 @@ public class Form_Stack extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        tabel.setSelectionBackground(new java.awt.Color(255, 144, 82));
+        tabel.setSelectionBackground(new java.awt.Color(255, 255, 255));
         spTabel.setViewportView(tabel);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

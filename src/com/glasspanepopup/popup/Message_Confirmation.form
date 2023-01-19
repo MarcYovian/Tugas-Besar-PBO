@@ -25,13 +25,15 @@
               <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="32767" attributes="0"/>
+                      <Component id="btnCancel" min="-2" pref="87" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="btnOk" min="-2" pref="87" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
                       <EmptySpace pref="20" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lbTitle" min="-2" pref="429" max="-2" attributes="0"/>
-                          <Component id="txt" min="-2" pref="429" max="-2" attributes="0"/>
+                          <Component id="lbTitle" alignment="0" min="-2" pref="429" max="-2" attributes="0"/>
+                          <Component id="txt" alignment="0" min="-2" pref="429" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
@@ -48,7 +50,10 @@
               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
               <Component id="txt" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-              <Component id="btnOk" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="btnOk" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnCancel" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -62,14 +67,6 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Title"/>
       </Properties>
-    </Component>
-    <Component class="com.swing.MyButton" name="btnOk">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Ok"/>
-      </Properties>
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="btnOk.setBackground(new Color(255,153,102));&#xa;btnOk.setForeground(new Color(250, 250, 250));&#xa;btnOk.setText(&quot;OK&quot;);&#xa;btnOk.setFont(new java.awt.Font(&quot;Poppins&quot;, 0, 13));"/>
-      </AuxValues>
     </Component>
     <Component class="javax.swing.JTextPane" name="txt">
       <Properties>
@@ -91,6 +88,25 @@
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
         </Property>
       </Properties>
+    </Component>
+    <Component class="com.swing.MyButton" name="btnOk">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="SUBMIT"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="btnOk.setBackground(new Color(255,153,102));&#xa;btnOk.setForeground(new Color(250, 250, 250));&#xa;btnOk.setText(&quot;SUBMIT&quot;);&#xa;btnOk.setFont(new java.awt.Font(&quot;Poppins&quot;, 0, 13));"/>
+      </AuxValues>
+    </Component>
+    <Component class="com.swing.MyButton" name="btnCancel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="CANCEL"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCancelActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="btnCancel.setBackground(new Color(250, 250, 250));&#xa;btnCancel.setForeground(new Color(255,153,102));&#xa;btnCancel.setText(&quot;Cancel&quot;);&#xa;btnCancel.setFont(new java.awt.Font(&quot;Poppins&quot;, 0, 13));"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>

@@ -3,6 +3,7 @@ package com.glasspanepopup.Stack;
 import com.frame.Form_Stack;
 import com.glasspanepopup.model.Model_Message;
 import com.glasspanepopup.popup.Message;
+import com.glasspanepopup.popup.Message_Confirmation;
 import com.main.Main;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -23,18 +24,29 @@ public class insertStack extends javax.swing.JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     String namaGudang = (String) cbNamGudang.getSelectedItem();
-                    int Kapasistas = Integer.parseInt(txtKapasitas.getText());
-                    if(namaGudang.equals("") || Kapasistas <= 0){
+                    int Kapasitas = Integer.parseInt(txtKapasitas.getText());
+                    if(namaGudang.equals("") || Kapasitas <= 0){
                         throw new Exception();
                     }
-                    System.out.println(namaGudang + " " + Kapasistas );
-                    // to do : insert query to database here & check if namaGudang already exists
+                    System.out.println(namaGudang + " " + Kapasitas );
+                    
+                    Message_Confirmation msc = new Message_Confirmation();
+                    msc.setData(new Model_Message("Konfirmasi", "Apakah anda yakin ingin menambahkan rak baru ke dalam Gudang ?"));
+                    msc.eventSUBMIT(new ActionListener(){
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            GlassPanePopup.closePopupLast();
+                            // to do : insert query to database here & check if stack already exists
 
+                            System.out.println(namaGudang + " " + Kapasitas);
+                            Form_Stack stack = new Form_Stack();
+                            Main main = (Main) SwingUtilities.getWindowAncestor(insertStack.this);
+                            main.setForm(stack);
+                        }
+                    });
+                    GlassPanePopup.showPopup(msc);
                     
                     //switch panel Stack
-                    Form_Stack stack = new Form_Stack();
-                    Main main = (Main) SwingUtilities.getWindowAncestor(insertStack.this);
-                    main.setForm(stack);
                     
                 } catch (Exception ex){
                     Message ms = new Message();
@@ -95,23 +107,23 @@ public class insertStack extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(100, Short.MAX_VALUE)
+                .addContainerGap(245, Short.MAX_VALUE)
+                .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(123, 123, 123))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cbNamGudang, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtKapasitas, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)))
-                .addContainerGap(100, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(123, 123, 123))
+                        .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(41, 41, 41)
+                .addGap(33, 33, 33)
                 .addComponent(jLabel5)
                 .addGap(5, 5, 5)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -119,7 +131,7 @@ public class insertStack extends javax.swing.JPanel {
                 .addComponent(cbNamGudang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(54, 54, 54)
                 .addComponent(txtKapasitas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 131, Short.MAX_VALUE)
                 .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(98, Short.MAX_VALUE))
         );
