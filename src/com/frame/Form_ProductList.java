@@ -1,6 +1,9 @@
 
 package com.frame;
 
+import com.actionTableAdmin.TableActionCellEditor;
+import com.actionTableAdmin.TableActionEvent;
+import com.actionTableAdmin.tableActionCellRender;
 import com.glasspanepopup.Barang.DataStorageInsProduct;
 import com.glasspanepopup.Barang.insertProduct;
 import com.insert.PopupInsert;
@@ -27,6 +30,15 @@ public class Form_ProductList extends javax.swing.JPanel {
         JPanel p = new JPanel();
         p.setBackground(Color.WHITE);
         spTabel.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
+        
+        TableActionEvent event = new TableActionEvent() {
+            @Override
+            public void onEdit(int row) {
+                System.out.println("edit row : " + row);
+            }
+        };
+        tabel.getColumnModel().getColumn(6).setCellRenderer(new tableActionCellRender());
+        tabel.getColumnModel().getColumn(6).setCellEditor(new TableActionCellEditor(event));
         
         btnTambah.addActionListener(new ActionListener() {
             @Override
@@ -62,12 +74,21 @@ public class Form_ProductList extends javax.swing.JPanel {
 
         tabel.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "id_Product", "id_Stack", "nama_Barang", "jenis_Barang", "Jumlah", "Deskripsi"
+                "id_Product", "id_Stack", "nama_Barang", "jenis_Barang", "Jumlah", "Deskripsi", "Action"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tabel.setSelectionBackground(new java.awt.Color(255, 255, 255));
         spTabel.setViewportView(tabel);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

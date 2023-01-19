@@ -41,7 +41,10 @@ public class Message extends javax.swing.JPanel {
         txt.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         txt.setForeground(new java.awt.Color(133, 133, 133));
         txt.setText("This is part of a series of short tutorials about specific elements, components, or interactions. We’ll cover the UX, the UI, and the construction inside of Sketch. Plus, there’s a freebie for you at the end!");
+        txt.setCaretColor(new java.awt.Color(255, 144, 82));
+        txt.setDisabledTextColor(new java.awt.Color(255, 144, 82));
         txt.setName(""); // NOI18N
+        txt.setSelectedTextColor(new java.awt.Color(255, 144, 82));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

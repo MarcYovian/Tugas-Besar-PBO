@@ -80,7 +80,16 @@
           <Color blue="85" green="85" red="85" type="rgb"/>
         </Property>
         <Property name="text" type="java.lang.String" value="This is part of a series of short tutorials about specific elements, components, or interactions. We&#x2019;ll cover the UX, the UI, and the construction inside of Sketch. Plus, there&#x2019;s a freebie for you at the end!"/>
+        <Property name="caretColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="52" green="90" red="ff" type="rgb"/>
+        </Property>
+        <Property name="disabledTextColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="52" green="90" red="ff" type="rgb"/>
+        </Property>
         <Property name="name" type="java.lang.String" value="" noResource="true"/>
+        <Property name="selectedTextColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="52" green="90" red="ff" type="rgb"/>
+        </Property>
       </Properties>
     </Component>
   </SubComponents>

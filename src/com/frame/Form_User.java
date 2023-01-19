@@ -1,5 +1,8 @@
 package com.frame;
 
+import com.actionTableOwner.TableActionCellEditor;
+import com.actionTableOwner.TableActionEvent;
+import com.actionTableOwner.tableActionCellRender;
 import com.model.StatusType;
 import com.swing.ScrollBar;
 import com.swing.tableHeader;
@@ -23,6 +26,14 @@ public class Form_User extends javax.swing.JPanel {
         p.setBackground(Color.WHITE);
         spTabel.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
 
+        TableActionEvent event = new TableActionEvent() {
+            @Override
+            public void onConfirm(int row) {
+                System.out.println("Confirm row : " + row);
+            }
+        };
+        tabel.getColumnModel().getColumn(3).setCellRenderer(new tableActionCellRender());
+        tabel.getColumnModel().getColumn(3).setCellEditor(new TableActionCellEditor(event));
     }
     
 
@@ -60,12 +71,21 @@ public class Form_User extends javax.swing.JPanel {
 
         tabel.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-
+                {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Username", "nama User", "email", "Action"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tabel.setSelectionBackground(new java.awt.Color(255, 255, 255));
         spTabel.setViewportView(tabel);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
