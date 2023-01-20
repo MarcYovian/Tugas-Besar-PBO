@@ -164,7 +164,7 @@ public class frRegist extends javax.swing.JFrame {
                             new Exception();
                         }
                         else{
-                            String insertQuery = "INSERT INTO user(nama_User, email, username, password, isUsed, isAdmin) VALUES (?,?,?,?,?,?)";
+                            String insertQuery = "INSERT INTO user(username, nama_User, email, password, isUsed, isAdmin) VALUES (?,?,?,?,?,?);";
                             db.query(insertQuery, nama,email,user,pass,0,1);                           
                         }
                 }else{

@@ -1,13 +1,17 @@
 package com.glasspane.popup.warehouse;
 
+import com.connection.DatabaseConnection;
 import com.frame.Form_Warehouse;
 import com.glasspanepopup.model.Model_Message;
 import com.glasspanepopup.popup.Message;
 import com.glasspanepopup.popup.Message_Confirmation;
 import com.main.Main;
+import com.sun.jdi.connect.spi.Connection;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import swinger.glasspanepopup.GlassPanePopup;
@@ -26,7 +30,7 @@ public class Insert_Warehouse extends javax.swing.JPanel {
                     if(namaGudang.equals("") || alamat.equals("")){
                         throw new Exception();
                     }
-                    System.out.println(namaGudang + "\n" + alamat);
+//                    System.out.println(namaGudang + "\n" + alamat);
                     // to do : insert query to database here & check if namaGudang already exists
                     Message_Confirmation msc = new Message_Confirmation();
                     msc.setData(new Model_Message("Konfirmasi", "Apakah anda yakin ingin menambahkan gudang Baru ?"));
@@ -35,11 +39,37 @@ public class Insert_Warehouse extends javax.swing.JPanel {
                         public void actionPerformed(ActionEvent e) {
                             GlassPanePopup.closePopupLast();
                             // to do : insert query to database here & check if stack already exists
-
-                            System.out.println(namaGudang + "\n" + alamat);
-                            Form_Warehouse wh = new Form_Warehouse();
-                            Main main = (Main) SwingUtilities.getWindowAncestor(Insert_Warehouse.this);
-                            main.setForm(wh);
+                            Connection con = null;
+                            PreparedStatement pstmt = null;
+                            
+                            try{
+                                DatabaseConnection db = new DatabaseConnection();
+                                String s = "SELECT nama_Gudang FROM gudang WHERE nama_Gudang = '" + namaGudang + "';";
+                                ResultSet rs = db.getData(s);
+                                
+                                /* Cek nama_Gudang sama*/ 
+                                if(rs.next()){
+                                    new Exception();
+                                }else{
+                                    String insertQuery = "INSERT INTO gudang (nama_Gudang, alamat) VALUES (?,?)";
+                                    db.queryWarehouse(insertQuery,namaGudang, alamat);
+                                    System.out.println(namaGudang + "\n" + alamat);
+                                    Form_Warehouse wh = new Form_Warehouse();
+                                    Main main = (Main) SwingUtilities.getWindowAncestor(Insert_Warehouse.this);
+                                    main.setForm(wh);
+                                }
+                            }catch (Exception ex) {
+                                Message ms = new Message();
+                                ms.setData(new Model_Message("Error","Username Already Exists"));
+                                ms.eventOK(new ActionListener(){
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                            GlassPanePopup.closePopupLast();
+                                    }
+                                });
+                                GlassPanePopup.showPopup(ms);
+                            }
+                            
                         }
                     });
                     GlassPanePopup.showPopup(msc);
