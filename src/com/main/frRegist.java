@@ -146,47 +146,27 @@ public class frRegist extends javax.swing.JFrame {
         Message ms = new Message();
         String nama = txtName.getText();
         String email = txtEmail.getText();
-        String user = txtUsername.getText();
+        String username = txtUsername.getText();
         String pass = txtPassword.getText();
         String pass1 = txtPasswordRep.getText();
         Connection con = null;
         PreparedStatement pstmt = null;
   
         /*   Password Berbeda   */
-        try {
-                if(pass1.equals(pass)){
-                        DatabaseConnection db = new DatabaseConnection();
-                        String s = "SELECT username FROM user WHERE username ='"+user+"';";
-                        ResultSet rs = db.getData(s);
-
-                        /*   Cek Username Sama   */
-                        if (rs.next()) {
-                            new Exception();
-                        }
-                        else{
-                            String insertQuery = "INSERT INTO user(username, nama_User, email, password, isUsed, isAdmin) VALUES (?,?,?,?,?,?);";
-                            db.query(insertQuery, nama,email,user,pass,0,1);                           
-                        }
-                }else{
-                    ms.setData(new Model_Message("Password", "Password Tidak Sesuai"));
-                    ms.eventOK(new ActionListener(){
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                                GlassPanePopup.closePopupLast();
-                        }
-                    });
-                    GlassPanePopup.showPopup(ms);
+        if(pass1.equals(pass)){
+            DatabaseConnection db = new DatabaseConnection();
+            String insertQuery = "INSERT INTO user(username, nama_User, email, password, isUsed, isAdmin) VALUES (?,?,?,?,?,?);";
+            db.queryRegister(insertQuery, username,nama,email,pass,0,1);
+        } else{
+            ms.setData(new Model_Message("Password", "Password Tidak Sesuai"));
+            ms.eventOK(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                     GlassPanePopup.closePopupLast();
                 }
-            } catch (Exception e) {
-                    ms.setData(new Model_Message("Error","Username Already Exists"));
-                    ms.eventOK(new ActionListener(){
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                                GlassPanePopup.closePopupLast();
-                        }
-                    });
-                    GlassPanePopup.showPopup(ms);
-            }
+            });
+            GlassPanePopup.showPopup(ms);
+        }
     }//GEN-LAST:event_btnRegistActionPerformed
 
     private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myTextField1ActionPerformed

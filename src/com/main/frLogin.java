@@ -153,80 +153,83 @@ public class frLogin extends javax.swing.JFrame {
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         String user = txtUsername.getText();
         String pass = txtPassword.getText();
+        String cekUser, CekPass;
+        boolean isUsed, isAdmin;
         String trueUser = "admin";
         String truePass = "admin";
+        DatabaseConnection db = new DatabaseConnection();
+        ResultSet rs;
         
         try {
-            DatabaseConnection db = new DatabaseConnection();
-            String query = "SELECT * FROM user WHERE username = '" + user + "' AND password = '" + pass + "'";
-            ResultSet rs = db.getData(query);
-            if(rs.next() && rs.getInt("isUsed")==1){
+            String query = "SELECT * FROM user WHERE username = '" + user + "'";
+            rs = db.getData(query);
+            
+            if (user.equals("")||pass.equals("")) {
                 Message ms = new Message();
-                ms.setData(new Model_Message("Berhasil Login", "Username dan Password Anda Benar"));
+                ms.setData(new Model_Message("Error", "Username dan Password Harus Diisi !!!"));
                 ms.eventOK(new ActionListener(){
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        new Main().setVisible(true);
-                        frLogin.dispose();
                         GlassPanePopup.closePopupLast();
                     }
                 });
                 GlassPanePopup.showPopup(ms);
+            }
+            else if(rs.next()){
+                cekUser = rs.getString("username");
+                CekPass = rs.getString("password");
+                isUsed = rs.getBoolean("isUsed");
+                isAdmin = rs.getBoolean("isAdmin");
+                if(user.equals(cekUser) && pass.equals(CekPass)){
+                    if (isUsed) {
+                        Message ms = new Message();
+                        ms.setData(new Model_Message("Berhasil Login", "Username dan Password Anda Benar"));
+                        ms.eventOK(new ActionListener(){
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                new Main().setVisible(true);
+                                frLogin.dispose();
+                                GlassPanePopup.closePopupLast();
+                            }
+                        });
+                        GlassPanePopup.showPopup(ms);
+                    }else{
+                        Message ms = new Message();
+                        ms.setData(new Model_Message("Gagal Login", "Akun belum bisa digunakan !!!"));
+                        ms.eventOK(new ActionListener(){
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                GlassPanePopup.closePopupLast();
+                            }
+                        });
+                        GlassPanePopup.showPopup(ms);
+                    }
+                }else{
+                    Message ms = new Message();
+                    ms.setData(new Model_Message("Gagal Login", "Password Tidak Sesuai !!!"));
+                    ms.eventOK(new ActionListener(){
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            GlassPanePopup.closePopupLast();
+                        }
+                    });
+                    GlassPanePopup.showPopup(ms);
+                }
                 
-            }else if(rs.next() && rs.getInt("isUsed")==0){ // error, cari solusi dulu ges
+            }else{
                 Message ms = new Message();
-                ms.setData(new Model_Message("Akun belum bisa digunakan", "Mohon maaf, akun belum bisa digunakan\n Silahkan tunggu sampai akun anda telah di Setujui oleh Owner!"));
+                ms.setData(new Model_Message("Failed", "Username Password Tidak Tersedia!!!\n SIlahkan melakukan Register Terlebih Dahulu"));
                 ms.eventOK(new ActionListener(){
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
+                   @Override
+                        public void actionPerformed(ActionEvent e) {
                             GlassPanePopup.closePopupLast();
-                    }
-                });
-                GlassPanePopup.showPopup(ms);
-            }else{// nder, edit nde bawah iki yo hehe
-                Message ms = new Message();
-                ms.setData(new Model_Message("Username / Password Not Found", "Username dan Password tidak ditemukan\n mohon untuk melakukan pendaftaran terlebih dahulu!"));
-                ms.eventOK(new ActionListener(){
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                            GlassPanePopup.closePopupLast();
-                    }
+                        }
                 });
                 GlassPanePopup.showPopup(ms);
             }
         } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
         }
-        /*
-        if(user.equals(trueUser)&&pass.equals(truePass)){
-            new Main().setVisible(true);
-            this.dispose();
-        }else{
-            LUser.setText("");
-            LPass.setText("");
-            if (user.equals("")&&pass.equals("")){
-                LUser.setText("Kosong!");
-                LPass.setText("Kosong!");
-            }else{
-                if(user.equals("")||pass.equals("")){
-                    if(txtUsername.getText().equals("")){
-                        LUser.setText("Kosong!");
-                    }
-                    if(pass.equals("")){
-                        LPass.setText("Kosong!");
-                    }
-                }else{
-                    if(user.equals(trueUser)){
-                            LPass.setText("Password Salah!");
-                    }else{
-                        LUser.setText("Username Salah!");
-                        LPass.setText("Password Salah!");
-                    }
-                }
-            }
-            txtUsername.setText("");
-            txtPassword.setText("");
-        }*/
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsernameActionPerformed

@@ -27,54 +27,46 @@ public class Insert_Warehouse extends javax.swing.JPanel {
                 try {
                     String namaGudang = txtNamGudang.getText();
                     String alamat = txtAlamat.getText();
+                    Connection con = null;
+                    PreparedStatement pstmt = null;
+                    ResultSet rs = null;
+                            
+                    DatabaseConnection db = new DatabaseConnection();
+                    String cekQuery = "SELECT nama_Gudang FROM gudang WHERE nama_Gudang = '" + namaGudang + "'";
+                    rs = db.getData(cekQuery);
                     if(namaGudang.equals("") || alamat.equals("")){
                         throw new Exception();
-                    }
-//                    System.out.println(namaGudang + "\n" + alamat);
-                    // to do : insert query to database here & check if namaGudang already exists
-                    Message_Confirmation msc = new Message_Confirmation();
-                    msc.setData(new Model_Message("Konfirmasi", "Apakah anda yakin ingin menambahkan gudang Baru ?"));
-                    msc.eventSUBMIT(new ActionListener(){
+                    }else if(rs.next()){
+                        Message ms = new Message();
+                        ms.setData(new Model_Message("Error","Nama Gudang Sudah Tersedia"));
+                        ms.eventOK(new ActionListener(){
                         @Override
-                        public void actionPerformed(ActionEvent e) {
-                            GlassPanePopup.closePopupLast();
-                            // to do : insert query to database here & check if stack already exists
-                            Connection con = null;
-                            PreparedStatement pstmt = null;
-                            
-                            try{
-                                DatabaseConnection db = new DatabaseConnection();
-                                String s = "SELECT nama_Gudang FROM gudang WHERE nama_Gudang = '" + namaGudang + "';";
-                                ResultSet rs = db.getData(s);
-                                
-                                /* Cek nama_Gudang sama*/ 
-                                if(rs.next()){
-                                    new Exception();
-                                }else{
+                             public void actionPerformed(ActionEvent e) {
+                                 GlassPanePopup.closePopupLast();
+                             }
+                        });
+                        GlassPanePopup.showPopup(ms);
+                    }else{
+                        Message_Confirmation msc = new Message_Confirmation();
+                        msc.setData(new Model_Message("Konfirmasi", "Apakah anda yakin ingin menambahkan gudang Baru ?"));
+                        msc.eventSUBMIT(new ActionListener(){
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                GlassPanePopup.closePopupLast();
+                        
                                     String insertQuery = "INSERT INTO gudang (nama_Gudang, alamat) VALUES (?,?)";
                                     db.queryWarehouse(insertQuery,namaGudang, alamat);
                                     System.out.println(namaGudang + "\n" + alamat);
+                                    
+                                    // set panel Form_Warehouse 
                                     Form_Warehouse wh = new Form_Warehouse();
                                     Main main = (Main) SwingUtilities.getWindowAncestor(Insert_Warehouse.this);
                                     main.setForm(wh);
-                                }
-                            }catch (Exception ex) {
-                                Message ms = new Message();
-                                ms.setData(new Model_Message("Error","Username Already Exists"));
-                                ms.eventOK(new ActionListener(){
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-                                            GlassPanePopup.closePopupLast();
-                                    }
-                                });
-                                GlassPanePopup.showPopup(ms);
                             }
-                            
-                        }
-                    });
-                    GlassPanePopup.showPopup(msc);
-                    
-                    // set panel Form_Warehouse
+                        });
+                        GlassPanePopup.showPopup(msc);
+                    }
+                   
                 } catch (Exception ex) {
                     Message ms = new Message();
                     ms.setData(new Model_Message("Error", "Mohon untuk mengisi semau field yang ada"));

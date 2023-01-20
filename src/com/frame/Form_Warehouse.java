@@ -3,6 +3,8 @@ package com.frame;
 import com.actionTableAdmin.TableActionCellEditor;
 import com.actionTableAdmin.TableActionEvent;
 import com.actionTableAdmin.tableActionCellRender;
+import com.connection.DatabaseConnection;
+import com.glasspane.popup.warehouse.Edit_Warehouse;
 import com.glasspane.popup.warehouse.Insert_Warehouse;
 import com.main.Main;
 import com.swing.ScrollBar;
@@ -12,9 +14,13 @@ import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import java.sql.ResultSet;
+import javax.swing.table.DefaultTableModel;
 
 public class Form_Warehouse extends javax.swing.JPanel {
-
+    
+    ResultSet rs;
+    
     public Form_Warehouse() {
         initComponents();
         
@@ -29,7 +35,9 @@ public class Form_Warehouse extends javax.swing.JPanel {
         TableActionEvent event = new TableActionEvent() {
             @Override
             public void onEdit(int row) {
-                System.out.println("edit row : " + row);
+                Edit_Warehouse edit = new Edit_Warehouse();
+                Main main = (Main) SwingUtilities.getWindowAncestor(Form_Warehouse.this);
+                main.setForm(edit);
             }
         };
         tabel.getColumnModel().getColumn(3).setCellRenderer(new tableActionCellRender());
@@ -43,6 +51,25 @@ public class Form_Warehouse extends javax.swing.JPanel {
                 main.setForm(wh);
             }
         });
+        
+        try {
+            DatabaseConnection db = new DatabaseConnection();
+            rs = db.getData("SELECT * FROM gudang");
+            
+            DefaultTableModel model = (DefaultTableModel) tabel.getModel();
+            while (rs.next()) {            
+                
+                String[] args = {
+                    rs.getString("id_Gudang"),
+                    rs.getString("nama_Gudang"),
+                    rs.getString("alamat")
+                };
+                model.addRow(args);
+            }
+            rs.close();
+        } catch (Exception e) {
+            System.out.println("halo");
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -96,20 +123,12 @@ public class Form_Warehouse extends javax.swing.JPanel {
 
         tabel.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null}
+
             },
             new String [] {
                 "id", "Nama", "Alamat", "Action"
             }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, true
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        ));
         tabel.setSelectionBackground(new java.awt.Color(255, 255, 255));
         spTabel.setViewportView(tabel);
 

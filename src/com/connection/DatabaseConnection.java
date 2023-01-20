@@ -32,19 +32,24 @@ public class DatabaseConnection{
     }
 
        
-    public ResultSet getData(String sQLString) {
-        try {
-            rs = stmt.executeQuery(sQLString);
-        } catch (Exception e) {
-            // TODO: handle exception
-            JOptionPane.showMessageDialog(null,
-             "Error"+e.getMessage(), "CommunicationError", 
-             JOptionPane.WARNING_MESSAGE);
+    public ResultSet getData(String SQLString){
+        try{
+            rs = stmt.executeQuery(SQLString);
+        }catch (Exception e){
+            Message ms = new Message();
+            ms.setData(new Model_Message("Comunication Error",e.getMessage()));
+            ms.eventOK(new ActionListener(){
+            @Override
+                public void actionPerformed(ActionEvent e) {
+                    GlassPanePopup.closePopupLast();                   
+                }
+            });
+            GlassPanePopup.showPopup(ms);
         }
         return rs;
     }
 
-    public void query(String sQLString, Object... args) {
+    public void queryRegister(String sQLString, Object... args) {
         try (PreparedStatement pstmt = con.prepareStatement(sQLString)){
             for(int i = 0; i < args.length; i++) {
                 pstmt.setObject(i + 1, args[i]);
@@ -64,12 +69,18 @@ public class DatabaseConnection{
             }else{
                 JOptionPane.showMessageDialog(null,"Error");
             }
-            
-            
+
         } catch (Exception e) {
             // TODO: handle exception
-            JOptionPane.showMessageDialog(null, "Error : "+ e.getMessage(), 
-            "ExecuteUpdateError", JOptionPane.WARNING_MESSAGE);
+            Message ms = new Message();
+            ms.setData(new Model_Message("Error","Username Already Exists"));
+            ms.eventOK(new ActionListener(){
+            @Override
+                public void actionPerformed(ActionEvent e) {
+                    GlassPanePopup.closePopupLast();                   
+                }
+            });
+            GlassPanePopup.showPopup(ms);
         }
     }
     
