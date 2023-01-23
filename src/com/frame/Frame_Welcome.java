@@ -1,6 +1,8 @@
 
 package com.frame;
 
+import com.dataStorage.User;
+import static com.dataStorage.User.getInstance;
 import com.model.model_NameProfile;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -10,12 +12,13 @@ import javax.swing.SwingConstants;
 
 
 public class Frame_Welcome extends javax.swing.JPanel {
-
+    private User data;
     public Frame_Welcome() {
         initComponents();
         setOpaque(false);
-        
-        lbProfile.setData(new model_NameProfile("Marcellinus Yovian"));
+        this.data = User.getInstance();
+//        String name = data.getNameUser();
+        lbProfile.setData(new model_NameProfile(data.getNameUser()));
     }
 
     @SuppressWarnings("unchecked")

@@ -10,7 +10,9 @@ public class Search extends javax.swing.JPanel {
     public Search() {
         initComponents();
         setBackground(new Color(255,255,255));
+        
     }
+    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

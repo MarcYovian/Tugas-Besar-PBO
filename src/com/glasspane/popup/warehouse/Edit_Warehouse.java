@@ -1,12 +1,81 @@
 package com.glasspane.popup.warehouse;
 
+import com.connection.DatabaseConnection;
+import com.dataStorage.editWarehouse;
+import com.frame.Form_Warehouse;
+import com.glasspanepopup.model.Model_Message;
+import com.glasspanepopup.popup.Message;
+import com.glasspanepopup.popup.Message_Confirmation;
+import com.main.Main;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import swinger.glasspanepopup.GlassPanePopup;
 
 public class Edit_Warehouse extends javax.swing.JPanel {
 
+    private editWarehouse data;
     public Edit_Warehouse() {
         initComponents();
+        
+        data = editWarehouse.getInstance();
+        int id = data.getId();
+        String nama = data.getNama();
+        String alamat = data.getAlamat();
+        if (nama!=null && !nama.equals("")) {
+            txtNamGudang.setText(nama);
+        }
+        if(alamat!=null && !alamat.equals("")){
+            txtAlamat.setText(alamat);
+        }
+        
+        btnSubmit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    String nama = txtNamGudang.getText();
+                    String alamat = txtAlamat.getText();
+
+                    PreparedStatement pstmt = null;
+                    ResultSet rs = null;
+
+                    if (nama.equals("") || alamat.equals("")) {
+                        throw new Exception();
+                    }
+                    Message_Confirmation msc = new Message_Confirmation();
+                    msc.setData(new Model_Message("Konfirmasi", "Apakah anda yakin ingin mengubah data Gudang ?"));
+                    msc.eventSUBMIT(new ActionListener(){
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            GlassPanePopup.closePopupLast();
+                            DatabaseConnection db = new DatabaseConnection();
+                            String editQuery = "UPDATE gudang SET nama_Gudang = ?, alamat = ? WHERE id_Gudang = ?";
+                            db.query("Berhasil", "Data Berhasil Di Update", editQuery, nama, alamat, id);
+                            
+                            Form_Warehouse form = new Form_Warehouse();
+                            Main main = (Main) SwingUtilities.getWindowAncestor(Edit_Warehouse.this);
+                            main.setForm(form);
+                        }
+                    });
+                    GlassPanePopup.showPopup(msc);
+                    
+                }catch (Exception ex) {
+                    Message ms = new Message();
+                    ms.setData(new Model_Message("Error", ex.getMessage()));
+                    ms.eventOK(new ActionListener(){
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            GlassPanePopup.closePopupLast();
+                        }
+                    });
+                    GlassPanePopup.showPopup(ms);
+                }
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")

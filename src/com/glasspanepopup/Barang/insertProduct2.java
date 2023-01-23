@@ -1,32 +1,70 @@
 package com.glasspanepopup.Barang;
 
+import com.connection.DatabaseConnection;
+import com.dataStorage.User;
+import com.frame.Form_ProductList;
+import com.glasspanepopup.Stack.insertStack;
 import com.glasspanepopup.model.Model_Message;
+import com.glasspanepopup.popup.Message;
 import com.glasspanepopup.popup.Message_Confirmation;
 import com.main.Main;
+import com.model.StatusType;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.sql.ResultSet;
 import java.awt.geom.RoundRectangle2D;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import swinger.glasspanepopup.GlassPanePopup;
 
 public class insertProduct2 extends javax.swing.JPanel {
     
-    private DataStorageInsProduct data;
+    private DS_2 data;
+    private DS_1 data2;
+    private User dataUser;
+    ResultSet rs; 
     
-    public insertProduct2(DataStorageInsProduct data){ 
+    public insertProduct2(){ 
         initComponents();
 //        setOpaque(false);
+//
+//        tpDeskripsi.setBackground(new Color(255,232,243, 0));
+//        tpDeskripsi.setSelectionColor(new Color(255, 153, 102));
+//        tpDeskripsi.setOpaque(false);
+        txtJumlah.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!((c >= '0') && (c <= '9') || (c == KeyEvent.VK_BACK_SPACE) || (c == KeyEvent.VK_DELETE))) {
+                    e.consume();
+                }
+            }
+        });
         
-        this.data = data;
+        data = DS_2.getInstance();
+        data2 = DS_1.getInstance();
+        dataUser = User.getInstance();
         String namaProduk = data.getNama_Barang();
         String Kategori = data.getJenis_Barang();
         int jumlah = data.getJumlah();
         String deskripsi = data.getDescription();
+        
+        int id_Rak = data2.getId_Stack();
+        String date = data2.getDate();
+        int id_Pelanggan = data2.getIdPelanggan();
+        StatusType status = data2.getStatus();
+        
+        String username = dataUser.getUsername();
+        
         // Set text fields value based on data
         if(namaProduk!=null&&!namaProduk.equals("")){
             txtName.setText(namaProduk);
@@ -37,71 +75,133 @@ public class insertProduct2 extends javax.swing.JPanel {
         if (jumlah>0) {
             txtJumlah.setText(String.valueOf(jumlah));
         }
-        if(deskripsi==null&&!deskripsi.equals("")){
-            txtDescription.setText(deskripsi);
+        if(deskripsi!=null && !deskripsi.equals("")){
+            tpDeskripsi.setText(deskripsi);
         }
         
         btnBack.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                String namaProduk = txtName.getText();
-                String Kategori = txtKategori.getText();
-                int jumlah = Integer.parseInt(txtJumlah.getText());
-                String deskripsi = txtDescription.getText();
-                
-                data.setNama_Barang(namaProduk);
-                data.setJenis_Barang(Kategori);
-                data.setJumlah(jumlah);
-                data.setDescription(deskripsi);
-                
-                // switch panel 1
-                insertProduct ins = new insertProduct(data);
-                Main main = (Main) SwingUtilities.getWindowAncestor(insertProduct2.this);
-                main.setForm(ins);
+                try{
+                    String namaProduk = txtName.getText();
+                    String Kategori = txtKategori.getText();
+                    int jumlah = Integer.parseInt(txtJumlah.getText());
+                    String deskripsi = tpDeskripsi.getText();
+                    if(namaProduk.equals("") || Kategori.equals("") || jumlah < 0 || deskripsi.equals("")){
+                        throw new Exception("Isi semua field yang tersedia atau pastikan data yang anda masukkan benar");
+                    }
+                    data.setNama_Barang(namaProduk);
+                    data.setJenis_Barang(Kategori);
+                    data.setJumlah(jumlah);
+                    data.setDescription(deskripsi);
+
+                    // switch panel 1
+                    insertProduct ins = new insertProduct();
+                    Main main = (Main) SwingUtilities.getWindowAncestor(insertProduct2.this);
+                    main.setForm(ins);
+                }catch(Exception ex){
+                    Message ms = new Message();
+                    ms.setData(new Model_Message("Error", ex.getMessage()));
+                    ms.eventOK(new ActionListener(){
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                                GlassPanePopup.closePopupLast();
+                        }
+                    });
+                    GlassPanePopup.showPopup(ms);
+                }
             }
-            
         });
         
         btnSubmit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            // to do : check if field/dataStorage in this panel is null (using try Catch) 
-            try{
-                String namaProduk = txtName.getText();
-                String Kategori = txtKategori.getText();
-                int jumlah = Integer.parseInt(txtJumlah.getText());
-                String deskripsi = txtDescription.getText();
-                
-                if (namaProduk.equals("")||Kategori.equals("")||jumlah<=0||deskripsi.equals("")) {
-                    throw new Exception();
-                }
-                
-                data.setNama_Barang(namaProduk);
-                data.setJenis_Barang(Kategori);
-                data.setJumlah(jumlah);
-                data.setDescription(deskripsi);
-                
-                Message_Confirmation msc = new Message_Confirmation();
-                msc.setData(new Model_Message("Konfirmasi", "Apakah anda yakin ingin menambahkan produk ke dalam Gudang ?"));
-                msc.eventSUBMIT(new ActionListener(){
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        GlassPanePopup.closePopupLast();
-                        // to do : insert query to database(dataStorageInsProduct here & check if namaGudang already exists
-                        
-                        System.out.println(data.getNama_Barang() + data.getJenis_Barang());
-                    }
-                });
-                GlassPanePopup.showPopup(msc);
-                
-            }catch (Exception ex) {
+                try {
+                    String namaProduk = txtName.getText();
+                    String kategori = txtKategori.getText();
+                    int jumlah = Integer.parseInt(txtJumlah.getText());
+                    String deskripsi = tpDeskripsi.getText();
                     
-            }
-            
-
-            // to do : switch panel to Form_ProductList and refresh table Form_ProductList
+                    DatabaseConnection db = new DatabaseConnection();
+                    
+                    
+                    int total = count(id_Rak) + jumlah;
+                    
+                    rs = db.getData("SELECT id_Rak, Kapasitas FROM rak_gudang WHERE id_Rak = '" + id_Rak + "' AND Kapasitas < '" + total + "'");
+                    if (namaProduk.equals("") || kategori.equals("") || jumlah < 0 || deskripsi.equals("")) {
+                        throw new Exception();
+                    }
+                    if(rs.next()){
+                        Message ms = new Message();
+                        ms.setData(new Model_Message("Error" , "Kapasitas pada rak yang anda pilih tidak cukup, silahkan untuk mengganti rak yang lain"));
+                        ms.eventOK(new ActionListener(){
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                GlassPanePopup.closePopupLast();
+                            }
+                        });
+                        GlassPanePopup.showPopup(ms);
+                    }else{
+                        Message_Confirmation msc = new Message_Confirmation();
+                        msc.setData(new Model_Message("Konfirmasi", "Apakah Data yang anda masukkan sudah benar ? "));
+                        msc.eventSUBMIT(new ActionListener(){
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                GlassPanePopup.closePopupLast();
+                                String insertProduct = "INSERT INTO barang(id_Rak, nama_Barang, kategori_Barang, jumlah, deskripsi, isDeleted) VALUES (?,?,?,?,?,?)";
+                                db.query("Insert Berhasil", "Berhasil Menambahkan Produk Baru", insertProduct, id_Rak, namaProduk, Kategori, jumlah, deskripsi, 0);
+                                
+                                DatabaseConnection dbc = new DatabaseConnection();
+                                int id_Barang = 0;
+                                rs = dbc.getData("SELECT * FROM barang WHERE nama_Barang = '" + namaProduk + "'");
+                                try {
+                                    if(rs.next()){
+                                        id_Barang = rs.getInt("id_Barang");
+                                    }
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(insertStack.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                String Status = status.name(); 
+                                System.out.println(id_Rak + " " + username + " " + id_Barang + " " + date + " " + Status);
+                                String insertNote = "INSERT INTO pencatatan(id_Rak, username, id_Barang, id_Pelanggan, tanggal, status) VALUES (?,?,?,?,?,?)";
+                                db.query("Insert Berhasil", "Berhasil Menambahkan Pencatatan Gudang Baru", insertNote, id_Rak, username, id_Barang, id_Pelanggan,date, Status);
+                                
+                                // Switch to panel Form_ProductList
+                                Form_ProductList form = new Form_ProductList();
+                                Main main = (Main) SwingUtilities.getWindowAncestor(insertProduct2.this);
+                                main.setForm(form);                               
+                            }
+                        });
+                        GlassPanePopup.showPopup(msc);
+                    }                   
+                } catch (Exception ex) {
+                    Message ms = new Message();
+                    ms.setData(new Model_Message("Error" , "Isi semua field yang tersedia atau pastikan data yang anda masukkan benar"));
+                    ms.eventOK(new ActionListener(){
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            GlassPanePopup.closePopupLast();
+                        }
+                    });
+                    GlassPanePopup.showPopup(ms);
+                }
             }
         });
+    }
+    
+    public int count(int id_Rak){
+        int total = 0;
+        DatabaseConnection db = new DatabaseConnection();
+        rs = db.getData("SELECT * FROM barang WHERE id_Rak = '" + id_Rak + "' AND isDeleted = 0");
+        try {
+            while (rs.next()) {
+                int jumlah = rs.getInt("jumlah");
+                total = total + jumlah;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(insertProduct2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return total;
     }
     
     @SuppressWarnings("unchecked")
@@ -117,11 +217,12 @@ public class insertProduct2 extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        txtDescription = new com.swing.MyTextField();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tpDeskripsi = new javax.swing.JTextPane();
 
         setBackground(new java.awt.Color(252, 251, 246));
 
@@ -156,8 +257,6 @@ public class insertProduct2 extends javax.swing.JPanel {
 
         jLabel4.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         jLabel4.setText("Deskripsi");
-
-        txtDescription.setHint("Deskripsi");
 
         jPanel1.setBackground(new java.awt.Color(250, 243, 206));
 
@@ -195,6 +294,13 @@ public class insertProduct2 extends javax.swing.JPanel {
         jLabel6.setText("STACK");
         jLabel6.setVerifyInputWhenFocusTarget(false);
 
+        tpDeskripsi.setBackground(new java.awt.Color(255, 232, 243));
+        tpDeskripsi.setCaretColor(new java.awt.Color(255, 232, 243));
+        tpDeskripsi.setDisabledTextColor(new java.awt.Color(255, 232, 243));
+        tpDeskripsi.setName(""); // NOI18N
+        jScrollPane1.setViewportView(tpDeskripsi);
+        tpDeskripsi.setBorder(null);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -219,12 +325,11 @@ public class insertProduct2 extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txtDescription, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jScrollPane1))))
                 .addContainerGap(100, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -244,7 +349,7 @@ public class insertProduct2 extends javax.swing.JPanel {
                     .addComponent(jLabel4))
                 .addGap(5, 5, 5)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(40, 40, 40)
@@ -255,11 +360,11 @@ public class insertProduct2 extends javax.swing.JPanel {
                 .addComponent(jLabel3)
                 .addGap(5, 5, 5)
                 .addComponent(txtJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(50, 50, 50))
+                .addContainerGap(51, Short.MAX_VALUE))
         );
 
         btnSubmit.setBackground(new Color(255,153,102));
@@ -278,7 +383,6 @@ public class insertProduct2 extends javax.swing.JPanel {
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
-        GlassPanePopup.closePopupAll();
     }//GEN-LAST:event_btnSubmitActionPerformed
 
     
@@ -293,7 +397,8 @@ public class insertProduct2 extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private com.swing.MyTextField txtDescription;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextPane tpDeskripsi;
     private com.swing.MyTextField txtJumlah;
     private com.swing.MyTextField txtKategori;
     private com.swing.MyTextField txtName;

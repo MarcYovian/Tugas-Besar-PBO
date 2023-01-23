@@ -3,7 +3,12 @@ package com.frame;
 import com.actionTableAdmin.TableActionCellEditor;
 import com.actionTableAdmin.TableActionEvent;
 import com.actionTableAdmin.tableActionCellRender;
+import com.connection.DatabaseConnection;
+import com.dataStorage.editRak;
+import com.glasspanepopup.Stack.Edit_Stack;
 import com.glasspanepopup.Stack.insertStack;
+import com.glasspanepopup.model.Model_Message;
+import com.glasspanepopup.popup.Message;
 import com.main.Main;
 import com.swing.ScrollBar;
 import java.awt.Color;
@@ -12,9 +17,18 @@ import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+import swinger.glasspanepopup.GlassPanePopup;
 
 public class Form_Stack extends javax.swing.JPanel {
+    
+    private editRak data;
 
+    ResultSet rs;
     public Form_Stack() {
         initComponents();
         
@@ -28,7 +42,35 @@ public class Form_Stack extends javax.swing.JPanel {
         TableActionEvent event = new TableActionEvent() {
             @Override
             public void onEdit(int row) {
-                System.out.println("edit row : " + row);
+                    data = editRak.getInstance();
+                    DefaultTableModel model = (DefaultTableModel) tabel.getModel();
+                    int idGudang = Integer.parseInt((String) model.getValueAt(row, 1));
+                    String namaGudang = null;
+                    DatabaseConnection db = new DatabaseConnection();
+                    ResultSet rs = db.getData("SELECT * FROM gudang WHERE id_Gudang = '" + idGudang +"'");
+                    try {
+                        if(rs.next()){
+                            namaGudang = rs.getString("nama_Gudang");
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Form_Stack.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    int idRak = Integer.parseInt((String) model.getValueAt(row, 0));
+                    String namaRak = (String) model.getValueAt(row, 2);
+                    int kapasitas = Integer.parseInt((String) model.getValueAt(row, 3));
+                    int isFull = Integer.parseInt((String) model.getValueAt(row, 4));
+                    
+//                    System.out.println(idRak + " " + namaGudang + " " + namaRak + " " + kapasitas + " " + isFull);
+                    data.setIdRak(idRak);
+                    data.setNamaGudang(namaGudang);
+                    data.setNamaRak(namaRak);
+                    data.setKapasitas(kapasitas);
+                    data.setIsFull(isFull);
+                    
+                    Edit_Stack edit = new Edit_Stack();
+                    Main main = (Main) SwingUtilities.getWindowAncestor(Form_Stack.this);
+                    main.setForm(edit);
+                    
             }
         };
         tabel.getColumnModel().getColumn(5).setCellRenderer(new tableActionCellRender());
@@ -42,6 +84,34 @@ public class Form_Stack extends javax.swing.JPanel {
                 main.setForm(insert);
             }
         });
+        
+        try {
+            DatabaseConnection db = new DatabaseConnection();
+            rs = db.getData("SELECT * FROM rak_gudang");
+            
+            DefaultTableModel model = (DefaultTableModel) tabel.getModel();
+            while (rs.next()) {                
+                String[] args = {
+                    rs.getString("id_Rak"),
+                    rs.getString("id_Gudang"),
+                    rs.getString("nama_Rak"),
+                    rs.getString("Kapasitas"),
+                    rs.getString("isFull")
+                };
+                model.addRow(args);
+            }
+            rs.close();
+        } catch (Exception e) {
+            Message ms = new Message();
+            ms.setData(new Model_Message("Error", e.getMessage()));
+            ms.eventOK(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    GlassPanePopup.closePopupLast();
+                }
+            });
+            GlassPanePopup.showPopup(ms);
+        }
     }
 
  
@@ -96,10 +166,7 @@ public class Form_Stack extends javax.swing.JPanel {
 
         tabel.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+
             },
             new String [] {
                 "id Stack", "id Gudang", "nama Stack", "Kapasitas", "isFull", "Action"

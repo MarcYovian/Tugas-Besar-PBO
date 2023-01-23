@@ -3,19 +3,29 @@ package com.frame;
 import com.actionTableOwner.TableActionCellEditor;
 import com.actionTableOwner.TableActionEvent;
 import com.actionTableOwner.tableActionCellRender;
+import com.connection.DatabaseConnection;
+import com.glasspanepopup.model.Model_Message;
+import com.glasspanepopup.popup.Message;
 import com.model.StatusType;
 import com.swing.ScrollBar;
 import com.swing.tableHeader;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import swinger.glasspanepopup.GlassPanePopup;
 
 public class Form_User extends javax.swing.JPanel {
 
+    ResultSet rs;
+        
     public Form_User() {
         initComponents();
         
@@ -29,11 +39,50 @@ public class Form_User extends javax.swing.JPanel {
         TableActionEvent event = new TableActionEvent() {
             @Override
             public void onConfirm(int row) {
-                System.out.println("Confirm row : " + row);
+                if(tabel.isEditing()){
+                    tabel.getCellEditor().stopCellEditing();
+                }
+                DatabaseConnection db =new DatabaseConnection();
+                
+                
+                DefaultTableModel model = (DefaultTableModel) tabel.getModel();
+                String username = (String) model.getValueAt(row, 0);
+                
+                String edit = "UPDATE user SET isUsed = 1 WHERE username = ?";
+                db.query("Disetujui", "Akun dengan Username " + username + " Berhasil disetujui", edit, username);
+                
+                model.removeRow(row);
+                
             }
         };
         tabel.getColumnModel().getColumn(3).setCellRenderer(new tableActionCellRender());
         tabel.getColumnModel().getColumn(3).setCellEditor(new TableActionCellEditor(event));
+       
+        try {
+            DatabaseConnection db = new DatabaseConnection();
+            rs = db.getData("SELECT * FROM user WHERE isUsed = 0");
+            
+            DefaultTableModel model = (DefaultTableModel) tabel.getModel();
+            while (rs.next()) {                
+                String[] args = {
+                    rs.getString("username"),
+                    rs.getString("nama_User"),
+                    rs.getString("email")
+                };
+                model.addRow(args);
+            }
+            rs.close();
+        } catch (Exception e) {
+            Message ms = new Message();
+            ms.setData(new Model_Message("Error", e.getMessage()));
+            ms.eventOK(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    GlassPanePopup.closePopupLast();
+                }
+            });
+            GlassPanePopup.showPopup(ms);
+        }
     }
     
 
@@ -47,12 +96,13 @@ public class Form_User extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         spTabel = new javax.swing.JScrollPane();
         tabel = new com.swing.TabelListUser();
+        jLabel2 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(252, 251, 246));
 
         jLabel1.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/icon/user-black.png"))); // NOI18N
-        jLabel1.setText("Customer List");
+        jLabel1.setText("Admin List");
 
         jPanel2.setOpaque(false);
 
@@ -71,7 +121,7 @@ public class Form_User extends javax.swing.JPanel {
 
         tabel.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null}
+
             },
             new String [] {
                 "Username", "nama User", "email", "Action"
@@ -88,20 +138,29 @@ public class Form_User extends javax.swing.JPanel {
         tabel.setSelectionBackground(new java.awt.Color(255, 255, 255));
         spTabel.setViewportView(tabel);
 
+        jLabel2.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel2.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(118, 118, 118));
+        jLabel2.setText("Admin NON Aktif");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addComponent(spTabel, javax.swing.GroupLayout.DEFAULT_SIZE, 855, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(spTabel, javax.swing.GroupLayout.DEFAULT_SIZE, 855, Short.MAX_VALUE))
                 .addGap(10, 10, 10))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addComponent(spTabel, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+                .addGap(20, 20, 20)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(spTabel, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE)
                 .addGap(10, 10, 10))
         );
 
@@ -136,6 +195,7 @@ public class Form_User extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private com.component.Search search1;

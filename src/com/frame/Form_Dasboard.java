@@ -1,26 +1,46 @@
 
 package com.frame;
 
+import com.connection.DatabaseConnection;
+import com.dataStorage.User;
+import com.dataStorage.product;
+import com.dataStorage.rak;
+import com.glasspanepopup.model.Model_Message;
+import com.glasspanepopup.popup.Message;
 import com.model.StatusType;
 import com.model.model_Card;
 import com.model.model_Welcome;
 import com.swing.ScrollBar;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
+import swinger.glasspanepopup.GlassPanePopup;
 
 
 public class Form_Dasboard extends javax.swing.JPanel {
 
-
+    private User data;
+    ResultSet rs;
+    
     public Form_Dasboard() {
         initComponents();
+        
+        data = User.getInstance();
+        
+        rak r = new rak();
+        product b = new product();
+        int jumlahStack = r.hitungTotal();
+        int jumlahBarang = b.hitungTotal();
         /* Welcome Message */
-        welcome1.setData(new model_Welcome("Selamat Datang","Marcellinus Yovian","Di Warehouse Application!!!"));
+        welcome1.setData(new model_Welcome("Selamat Datang",data.getNameUser(),"Di Warehouse Application!!!"));
         
         /* Card */
-        card1.setData(new model_Card("Product", 20));
-        card2.setData(new model_Card("Stack", 5));
+        card1.setData(new model_Card("Product", jumlahBarang));
+        card2.setData(new model_Card("Stack", jumlahStack));
         
         /* Table */
         spTabel.setVerticalScrollBar(new ScrollBar());
@@ -29,10 +49,36 @@ public class Form_Dasboard extends javax.swing.JPanel {
         JPanel p = new JPanel();
         p.setBackground(Color.WHITE);
         spTabel.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
-        tabel.addRow(new Object[]{1, "01", "Marcell","Sabun","1","02/02/21", StatusType.INCOMING});
-        tabel.addRow(new Object[]{2, "02", "Marcell","Sabun","2","02/02/21", StatusType.OUTGOING});
-        tabel.addRow(new Object[]{3, "03", "Marcell","Sabun","3","02/02/21", StatusType.TRANSFERRED});
-        tabel.addRow(new Object[]{4, "04", "Marcell","Sabun","4","02/02/21", StatusType.RETURNED});
+        
+        try {
+            DatabaseConnection db = new DatabaseConnection();
+            rs = db.getData("SELECT * FROM pencatatan");
+            
+            DefaultTableModel model = (DefaultTableModel) tabel.getModel();
+            while (rs.next()) {                
+                String[] args = {
+                    rs.getString("id_Pencatatan"),
+                    rs.getString("id_Rak"),
+                    rs.getString("username"),
+                    rs.getString("id_Barang"),
+                    rs.getString("id_Pelanggan"),
+                    rs.getString("tanggal"),
+                    rs.getString("status")
+                };
+                model.addRow(args);
+            }
+            rs.close();
+        } catch (Exception e) {
+            Message ms = new Message();
+            ms.setData(new Model_Message("Error", e.getMessage()));
+            ms.eventOK(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    GlassPanePopup.closePopupLast();
+                }
+            });
+            GlassPanePopup.showPopup(ms);
+        }
     }
 
     @SuppressWarnings("unchecked")

@@ -19,30 +19,22 @@ public class Tabel extends JTable {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                   tableHeader header = new tableHeader(value + "");
-                  if (column == 6) {
-                      header.setHorizontalAlignment(JLabel.CENTER);
-                  }      
+                  header.setHorizontalAlignment(JLabel.CENTER);
                   return header;
             }
         });
         setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                if( column != 6 ){
-                    Component com = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                    com.setBackground(Color.WHITE);
-                    setBorder(noFocusBorder);
-                    if (isSelected) {
-                        com.setForeground(new Color(15, 89, 140));
-                    } else {
-                        com.setForeground(new Color(102, 102, 102));
-                    }
-                    return com;
+                Component com = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                com.setBackground(Color.WHITE);
+                setBorder(noFocusBorder);
+                if (isSelected) {
+                    com.setForeground(new Color(15, 89, 140));
                 } else {
-                    StatusType type = (StatusType)value;
-                    CellStatus cell = new CellStatus(type);
-                    return cell;
+                    com.setForeground(new Color(102, 102, 102));
                 }
+                return com;
             }
          });
     }

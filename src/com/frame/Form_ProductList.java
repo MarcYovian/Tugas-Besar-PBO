@@ -1,26 +1,43 @@
 
 package com.frame;
 
-import com.actionTableAdmin.TableActionCellEditor;
-import com.actionTableAdmin.TableActionEvent;
-import com.actionTableAdmin.tableActionCellRender;
-import com.glasspanepopup.Barang.DataStorageInsProduct;
+import com.actionTableProduct.TableActionCellEditor;
+import com.actionTableProduct.TableActionEvent;
+import com.actionTableProduct.tableActionCellRender;
+import com.connection.DatabaseConnection;
+import com.dataStorage.editProduct;
+import com.glasspanepopup.Barang.DS_1;
+import static com.glasspanepopup.Barang.DS_1.getInstance;
+import com.glasspanepopup.Barang.Edit_Product;
+import com.glasspanepopup.Barang.Exited_Product;
 import com.glasspanepopup.Barang.insertProduct;
+import com.glasspanepopup.model.Model_Message;
+import com.glasspanepopup.popup.Message;
 import com.insert.PopupInsert;
 import com.insert.popUp;
 import com.main.Main;
+import com.model.StatusType;
 import com.swing.ScrollBar;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
 import swinger.glasspanepopup.GlassPanePopup;
 
 public class Form_ProductList extends javax.swing.JPanel {
-    private DataStorageInsProduct data;
+    
+    private DS_1 data;
+    private editProduct dataEdit;  
+    ResultSet rs;
+    
     public Form_ProductList() {
         initComponents();
        
@@ -34,7 +51,88 @@ public class Form_ProductList extends javax.swing.JPanel {
         TableActionEvent event = new TableActionEvent() {
             @Override
             public void onEdit(int row) {
-                System.out.println("edit row : " + row);
+                dataEdit = editProduct.getInstance();
+                DefaultTableModel model = (DefaultTableModel) tabel.getModel();
+                int idProduct = Integer.parseInt((String) model.getValueAt(row, 0));
+                int idRak = Integer.parseInt((String) model.getValueAt(row, 1));
+                String namaBarang = (String) model.getValueAt(row, 2);
+                String kategori = (String) model.getValueAt(row, 3);
+                int jumlah = Integer.parseInt((String) model.getValueAt(row, 4));
+                String deskripsi = (String) model.getValueAt(row, 5);
+                
+                DatabaseConnection db =new DatabaseConnection();
+                rs = db.getData("SELECT * FROM pencatatan WHERE id_Rak = '" + idRak + "' AND id_Barang = '" + idProduct + "'");
+                String date = null;
+                String status = null;
+                int idPelanggan = 0;
+                try {
+                    if (rs.next()) {
+                        date = rs.getString("tanggal");
+                        status = rs.getString("status");
+                        idPelanggan =rs.getInt("id_Pelanggan");
+                        
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(Form_ProductList.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println(idProduct + " " + idRak + " " + namaBarang +  " " + idPelanggan + " " + kategori + " " + jumlah + " " + deskripsi + " " + date + " " + status);
+                
+                dataEdit.setIdBarang(idProduct);
+                dataEdit.setIdRak(idRak);
+                dataEdit.setNamaBarang(namaBarang);
+                dataEdit.setIdPelanggan(idPelanggan);
+                dataEdit.setKategori(kategori);
+                dataEdit.setJumlah(jumlah);
+                dataEdit.setDeskripsi(deskripsi);
+                dataEdit.setDate(date);
+                dataEdit.setStatus(StatusType.valueOf(status));
+                
+                Edit_Product edit = new Edit_Product();
+                Main main = (Main) SwingUtilities.getWindowAncestor(Form_ProductList.this);
+                main.setForm(edit);
+            }
+
+            @Override
+            public void onExited(int row) {
+                dataEdit = editProduct.getInstance();
+                DefaultTableModel model = (DefaultTableModel) tabel.getModel();
+                int idProduct = Integer.parseInt((String) model.getValueAt(row, 0));
+                int idRak = Integer.parseInt((String) model.getValueAt(row, 1));
+                String namaBarang = (String) model.getValueAt(row, 2);
+                String kategori = (String) model.getValueAt(row, 3);
+                int jumlah = Integer.parseInt((String) model.getValueAt(row, 4));
+                String deskripsi = (String) model.getValueAt(row, 5);
+                
+                DatabaseConnection db =new DatabaseConnection();
+                rs = db.getData("SELECT * FROM pencatatan WHERE id_Rak = '" + idRak + "' AND id_Barang = '" + idProduct + "'");
+                String date = null;
+                String status = null;
+                int idPelanggan = 0;
+                try {
+                    if (rs.next()) {
+                        date = rs.getString("tanggal");
+                        status = rs.getString("status");
+                        idPelanggan =rs.getInt("id_Pelanggan");
+                        
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(Form_ProductList.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println(idProduct + " " + idRak + " " + namaBarang +  " " + idPelanggan + " " + kategori + " " + jumlah + " " + deskripsi + " " + date + " " + status);
+                
+                dataEdit.setIdBarang(idProduct);
+                dataEdit.setIdRak(idRak);
+                dataEdit.setNamaBarang(namaBarang);
+                dataEdit.setIdPelanggan(idPelanggan);
+                dataEdit.setKategori(kategori);
+                dataEdit.setJumlah(jumlah);
+                dataEdit.setDeskripsi(deskripsi);
+                dataEdit.setDate(date);
+                dataEdit.setStatus(StatusType.valueOf(status));
+                
+                Exited_Product edit = new Exited_Product();
+                Main main = (Main) SwingUtilities.getWindowAncestor(Form_ProductList.this);
+                main.setForm(edit);
             }
         };
         tabel.getColumnModel().getColumn(6).setCellRenderer(new tableActionCellRender());
@@ -43,12 +141,40 @@ public class Form_ProductList extends javax.swing.JPanel {
         btnTambah.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                data = new DataStorageInsProduct();
-                insertProduct insert = new insertProduct(data);
+                insertProduct insert = new insertProduct();
                 Main main = (Main) SwingUtilities.getWindowAncestor(Form_ProductList.this);
                 main.setForm(insert);
             }
         });
+        
+        try {
+            DatabaseConnection db =new DatabaseConnection();
+            rs = db.getData("SELECT * FROM barang WHERE isDeleted = 0");
+            
+            DefaultTableModel model = (DefaultTableModel) tabel.getModel();
+            while (rs.next()) {                
+                String[] args = {
+                    rs.getString("id_Barang"),
+                    rs.getString("id_Rak"),
+                    rs.getString("nama_Barang"),
+                    rs.getString("kategori_Barang"),
+                    rs.getString("jumlah"),
+                    rs.getString("deskripsi")
+                };
+                model.addRow(args);
+            }
+            rs.close();
+        } catch (Exception e) {
+            Message ms = new Message();
+            ms.setData(new Model_Message("Error", e.getMessage()));
+            ms.eventOK(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    GlassPanePopup.closePopupLast();
+                }
+            });
+            GlassPanePopup.showPopup(ms);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -74,7 +200,7 @@ public class Form_ProductList extends javax.swing.JPanel {
 
         tabel.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "id_Product", "id_Stack", "nama_Barang", "jenis_Barang", "Jumlah", "Deskripsi", "Action"

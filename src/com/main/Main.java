@@ -1,5 +1,6 @@
 package com.main;
 
+import com.dataStorage.User;
 import com.frame.*;
 import com.event.*;
 import javax.swing.JComponent;
@@ -8,37 +9,71 @@ import swinger.glasspanepopup.GlassPanePopup;
 
 public class Main extends javax.swing.JFrame {
 
+    
     private Form_Dasboard dasboard;
     private Form_ProductList productList;
     private Form_Stack stackList;
     private Form_Warehouse warehouseList;
     private Form_User userList;
     private Form_Customer customer;
+    private User data;
+    
+    Main Main = this;
+    
     public Main() {
         initComponents();
+        
         GlassPanePopup.install(this);
-        dasboard = new Form_Dasboard();
-        productList = new Form_ProductList();
-        stackList = new Form_Stack();
-        warehouseList = new Form_Warehouse();
-        userList = new Form_User();
-        customer = new Form_Customer();
+        data = User.getInstance();
         menu.addEventMenuSelected(new EventMenuSelected() {
             @Override
             public void selected(int index) {
 //                System.out.println(index);
-                if (index == 0) {
-                    setForm(dasboard);
-                } else if (index == 1) {
-                    setForm(productList);
-                }else if (index == 2) {
-                    setForm(stackList);
-                }else if (index == 3) {
-                    setForm(warehouseList);
-                }else if (index == 4) {
-                    setForm(userList);
-                }else if (index == 5) {
-                    setForm(customer);
+                if(data.getIsAdmin() == true) {
+                    if (index == 0) {
+                        dasboard = new Form_Dasboard();
+                        setForm(dasboard);
+                    } else if (index == 1) {
+                        productList = new Form_ProductList();
+                        setForm(productList);
+                    }else if (index == 2) {
+                        stackList = new Form_Stack();
+                        setForm(stackList);
+                    }else if (index == 3) {
+                        warehouseList = new Form_Warehouse();
+                        setForm(warehouseList);
+                    }else if (index == 4) {
+                        customer = new Form_Customer();
+                        setForm(customer);
+                    }else if(index == 5){
+                        frLogin login = new frLogin();
+                        login.setVisible(true);
+                        Main.dispose();
+                    }
+                }else{
+                    if (index == 0) {
+                        dasboard = new Form_Dasboard();
+                        setForm(dasboard);
+                    } else if (index == 1) {
+                        productList = new Form_ProductList();
+                        setForm(productList);
+                    }else if (index == 2) {
+                        stackList = new Form_Stack();
+                        setForm(stackList);
+                    }else if (index == 3) {
+                        warehouseList = new Form_Warehouse();
+                        setForm(warehouseList);
+                    }else if (index == 4) {
+                        customer = new Form_Customer();
+                        setForm(customer);
+                    }else if(index == 5){
+                        userList = new Form_User();
+                        setForm(userList);
+                    }else if(index == 6){
+                        frLogin login = new frLogin();
+                        login.setVisible(true);
+                        Main.dispose();
+                    }
                 }
             }
         });
@@ -59,8 +94,8 @@ public class Main extends javax.swing.JFrame {
 
         panelBorderDas2 = new com.swing.panelBorderDas();
         menu = new com.component.Menu();
-        frame_Welcome1 = new com.frame.Frame_Welcome();
         mainPanel = new javax.swing.JPanel();
+        frame_Welcome1 = new com.frame.Frame_Welcome();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -75,19 +110,19 @@ public class Main extends javax.swing.JFrame {
             .addGroup(panelBorderDas2Layout.createSequentialGroup()
                 .addComponent(menu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(panelBorderDas2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(frame_Welcome1, javax.swing.GroupLayout.DEFAULT_SIZE, 757, Short.MAX_VALUE)
+                    .addComponent(frame_Welcome1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(panelBorderDas2Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 745, Short.MAX_VALUE)
                         .addContainerGap())))
         );
         panelBorderDas2Layout.setVerticalGroup(
             panelBorderDas2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(menu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(menu, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
             .addGroup(panelBorderDas2Layout.createSequentialGroup()
                 .addComponent(frame_Welcome1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE)
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -133,6 +168,7 @@ public class Main extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                
                 new Main().setVisible(true);
             }
         });

@@ -55,8 +55,7 @@ public class Insert_Warehouse extends javax.swing.JPanel {
                                 GlassPanePopup.closePopupLast();
                         
                                     String insertQuery = "INSERT INTO gudang (nama_Gudang, alamat) VALUES (?,?)";
-                                    db.queryWarehouse(insertQuery,namaGudang, alamat);
-                                    System.out.println(namaGudang + "\n" + alamat);
+                                    db.query("Berhasil", "Berhasil Menambah Gudang Baru", insertQuery,namaGudang, alamat);
                                     
                                     // set panel Form_Warehouse 
                                     Form_Warehouse wh = new Form_Warehouse();
@@ -123,7 +122,7 @@ public class Insert_Warehouse extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(100, Short.MAX_VALUE)
+                .addContainerGap(101, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -132,7 +131,7 @@ public class Insert_Warehouse extends javax.swing.JPanel {
                             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
                             .addComponent(txtNamGudang, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(101, Short.MAX_VALUE))
+                .addContainerGap(104, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

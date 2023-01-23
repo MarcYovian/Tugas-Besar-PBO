@@ -4,8 +4,11 @@ import com.actionTableAdmin.TableActionCellEditor;
 import com.actionTableAdmin.TableActionEvent;
 import com.actionTableAdmin.tableActionCellRender;
 import com.connection.DatabaseConnection;
+import com.dataStorage.editWarehouse;
 import com.glasspane.popup.warehouse.Edit_Warehouse;
 import com.glasspane.popup.warehouse.Insert_Warehouse;
+import com.glasspanepopup.model.Model_Message;
+import com.glasspanepopup.popup.Message;
 import com.main.Main;
 import com.swing.ScrollBar;
 import java.awt.Color;
@@ -16,15 +19,17 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import java.sql.ResultSet;
 import javax.swing.table.DefaultTableModel;
+import swinger.glasspanepopup.GlassPanePopup;
 
 public class Form_Warehouse extends javax.swing.JPanel {
     
     ResultSet rs;
+    private editWarehouse data;
     
     public Form_Warehouse() {
         initComponents();
         
-        
+        data = editWarehouse.getInstance();
         spTabel.setVerticalScrollBar(new ScrollBar());
         spTabel.getVerticalScrollBar().setBackground(Color.WHITE);
         spTabel.getViewport().setBackground(Color.WHITE);   
@@ -35,6 +40,13 @@ public class Form_Warehouse extends javax.swing.JPanel {
         TableActionEvent event = new TableActionEvent() {
             @Override
             public void onEdit(int row) {
+                DefaultTableModel model = (DefaultTableModel) tabel.getModel();
+                int id = Integer.parseInt((String) model.getValueAt(row, 0));
+                String nama = (String) model.getValueAt(row, 1);
+                String alamat = (String) model.getValueAt(row, 2);
+                data.setId(id);
+                data.setNama(nama);
+                data.setAlamat(alamat);
                 Edit_Warehouse edit = new Edit_Warehouse();
                 Main main = (Main) SwingUtilities.getWindowAncestor(Form_Warehouse.this);
                 main.setForm(edit);
@@ -68,7 +80,15 @@ public class Form_Warehouse extends javax.swing.JPanel {
             }
             rs.close();
         } catch (Exception e) {
-            System.out.println("halo");
+            Message ms = new Message();
+            ms.setData(new Model_Message("Error", e.getMessage()));
+            ms.eventOK(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    GlassPanePopup.closePopupLast();
+                }
+            });
+            GlassPanePopup.showPopup(ms);
         }
     }
 
@@ -130,6 +150,7 @@ public class Form_Warehouse extends javax.swing.JPanel {
             }
         ));
         tabel.setSelectionBackground(new java.awt.Color(255, 255, 255));
+        tabel.setSelectionForeground(new java.awt.Color(255, 255, 255));
         spTabel.setViewportView(tabel);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

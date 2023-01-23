@@ -2,6 +2,7 @@
 package com.main;
 
 import com.connection.DatabaseConnection;
+import com.dataStorage.User;
 import com.glasspanepopup.model.Model_Message;
 import com.glasspanepopup.popup.Message;
 import com.swing.MyTextField;
@@ -14,6 +15,7 @@ import javax.swing.JOptionPane;
 import swinger.glasspanepopup.GlassPanePopup;
 
 public class frLogin extends javax.swing.JFrame {
+    private User data;
     frLogin frLogin = this;
     public frLogin() {
         initComponents();
@@ -76,7 +78,7 @@ public class frLogin extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(195, Short.MAX_VALUE)
+                .addContainerGap(197, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -120,9 +122,7 @@ public class frLogin extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(regist1, javax.swing.GroupLayout.PREFERRED_SIZE, 569, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(regist1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         btnLogin.setBackground(new Color(255,153,102));
@@ -182,14 +182,21 @@ public class frLogin extends javax.swing.JFrame {
                 isAdmin = rs.getBoolean("isAdmin");
                 if(user.equals(cekUser) && pass.equals(CekPass)){
                     if (isUsed) {
+                        data = User.getInstance();
+                        data.setUsername(cekUser);
+                        data.setNameUser(rs.getString("nama_User"));
+                        data.setEmail(rs.getString("email"));
+                        data.setIsAdmin(isAdmin);
                         Message ms = new Message();
                         ms.setData(new Model_Message("Berhasil Login", "Username dan Password Anda Benar"));
                         ms.eventOK(new ActionListener(){
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                new Main().setVisible(true);
-                                frLogin.dispose();
+//                                new Main(data).setVisible(true);
                                 GlassPanePopup.closePopupLast();
+                                Main main = new Main();
+                                main.setVisible(true);
+                                frLogin.dispose();
                             }
                         });
                         GlassPanePopup.showPopup(ms);

@@ -1,36 +1,48 @@
 package com.glasspanepopup.Barang;
 
+import com.connection.DatabaseConnection;
 import com.glasspanepopup.model.Model_Message;
 import com.glasspanepopup.popup.Message;
 import com.main.Main;
+import com.model.StatusType;
+import static com.model.StatusType.INCOMING;
+import static com.model.StatusType.values;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import static java.lang.Enum.valueOf;
+import javax.swing.JOptionPane;
+import java.sql.ResultSet;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import swinger.glasspanepopup.GlassPanePopup;
 
 public class insertProduct extends javax.swing.JPanel {
 
-    private DataStorageInsProduct data;
+    private DS_1 data;
 
-    public insertProduct(DataStorageInsProduct data) {
+    public insertProduct() {
         initComponents();
+        
+        displayIdRak();
+        displayIdPelanggan();
+        displayStatus();
 
-        this.data = data;
+        data = DS_1.getInstance();
         int idStack = data.getId_Stack();
         String date = data.getDate();
         int idPelanggan = data.getIdPelanggan();
-        String status = data.getStatus();
+         StatusType status = data.getStatus();
         //set value of combo box based on data
-        if (idStack !=  0) {
-            cbIdStack.setSelectedIndex(idStack);
+        if (idStack >=  0) {
+            cbIdStack.setSelectedItem(idStack);
         }
         if (date != null && !date.equals("")) {
             txtDate.setText(date);
         }
-        if (idPelanggan !=  0) {
-            cbIdPelanggan.setSelectedIndex(idPelanggan);
+        if (idPelanggan >=  0) {
+            cbIdPelanggan.setSelectedItem(idPelanggan);
         }
         if (status != null && !status.equals("")) {
             cbStatus.setSelectedItem(status);
@@ -39,25 +51,27 @@ public class insertProduct extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int idStack = cbIdStack.getSelectedIndex();
+                    int idStack = (int) cbIdStack.getSelectedItem();
                     String date = txtDate.getText();
-                    int idPelanggan = cbIdPelanggan.getSelectedIndex();
-                    String status = (String)cbStatus.getSelectedItem();
+                    int idPelanggan = (int) cbIdPelanggan.getSelectedItem();
+                    StatusType status = (StatusType) cbStatus.getSelectedItem();
                     System.out.println(idStack+ " " + idPelanggan+ " " + date+ " " + status);
-                    if (idStack <= 0 || date.equals("") || idPelanggan <= 0 || status.equals("")) {
+                    if (idStack < 0 || date.equals("") || idPelanggan < 0 || status.equals("")) {
                         throw new Exception();
                     }
                     data.setId_Stack(idStack);
                     data.setDate(date);
                     data.setIdPelanggan(idPelanggan);
                     data.setStatus(status);
+                    
                     //switch panel 2
-                    insertProduct2 tambahProduct2 = new insertProduct2(data);
+                    insertProduct2 wh = new insertProduct2();
                     Main main = (Main) SwingUtilities.getWindowAncestor(insertProduct.this);
-                    main.setForm(tambahProduct2);
+                    main.setForm(wh);             
+
                 } catch (Exception ex) {
                     Message ms = new Message();
-                    ms.setData(new Model_Message("Error", "Silahkan isi data pada semua field yang tersedia atau pastikan data yang dimasukkan benar"));
+                    ms.setData(new Model_Message("Error", ex.getMessage()));
                     ms.eventOK(new ActionListener(){
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -70,7 +84,61 @@ public class insertProduct extends javax.swing.JPanel {
         });
     }
 
-
+    private void displayIdRak(){
+        DatabaseConnection db = new DatabaseConnection();
+        ResultSet rs;
+        
+        try {
+            DefaultComboBoxModel model = (DefaultComboBoxModel) cbIdStack.getModel();
+            model.removeAllElements();
+            rs = db.getData("SELECT * FROM rak_gudang");
+            while (rs.next()) {                
+                int id = rs.getInt("id_Rak");
+                cbIdStack.addItem(id);
+            }
+        } catch (Exception e) {
+            Message ms = new Message();
+            ms.setData(new Model_Message("Error", e.getMessage()));
+            ms.eventOK(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    GlassPanePopup.closePopupLast();
+                }
+            });
+            GlassPanePopup.showPopup(ms);
+        }
+    }
+    
+    private void displayIdPelanggan(){
+        DatabaseConnection db = new DatabaseConnection();
+        ResultSet rs;
+        
+        try {
+            DefaultComboBoxModel model = (DefaultComboBoxModel) cbIdPelanggan.getModel();
+            model.removeAllElements();
+            rs = db.getData("SELECT * FROM pelanggan WHERE isSupplier = 1");
+            while (rs.next()) {                
+                int id = rs.getInt("id_Pelanggan");
+                cbIdPelanggan.addItem(id);
+            }
+        } catch (Exception e) {
+            Message ms = new Message();
+            ms.setData(new Model_Message("Error", e.getMessage()));
+            ms.eventOK(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    GlassPanePopup.closePopupLast();
+                }
+            });
+            GlassPanePopup.showPopup(ms);
+        }
+    }
+    
+    public void displayStatus(){
+        for(StatusType status : StatusType.values()){
+            cbStatus.addItem(status);
+        }
+    }
   
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -90,6 +158,7 @@ public class insertProduct extends javax.swing.JPanel {
         cbStatus = new com.swing.Combobox();
 
         date.setForeground(new java.awt.Color(255, 153, 102));
+        date.setDateFormat("yyyy-MM-dd");
         date.setTextRefernce(txtDate);
 
         setBackground(new java.awt.Color(252, 251, 246));
@@ -138,6 +207,7 @@ public class insertProduct extends javax.swing.JPanel {
             .addGap(0, 8, Short.MAX_VALUE)
         );
 
+        txtDate.setText("");
         txtDate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtDateActionPerformed(evt);
@@ -154,16 +224,10 @@ public class insertProduct extends javax.swing.JPanel {
             }
         });
 
-        cbIdStack.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2" }));
-        cbIdStack.setSelectedIndex(-1);
         cbIdStack.setLabeText("id Stack");
 
-        cbIdPelanggan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2" }));
-        cbIdPelanggan.setSelectedIndex(-1);
         cbIdPelanggan.setLabeText("Id Pelanggan");
 
-        cbStatus.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "halo", "saya" }));
-        cbStatus.setSelectedIndex(-1);
         cbStatus.setLabeText("Status");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -176,7 +240,7 @@ public class insertProduct extends javax.swing.JPanel {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addContainerGap(97, Short.MAX_VALUE)
+                        .addContainerGap(98, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -187,13 +251,13 @@ public class insertProduct extends javax.swing.JPanel {
                                 .addComponent(cbIdStack, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
                                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cbIdPelanggan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cbStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(99, Short.MAX_VALUE))
+                .addContainerGap(100, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -206,7 +270,7 @@ public class insertProduct extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(53, 53, 53)
+                .addGap(50, 50, 50)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbIdStack, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cbIdPelanggan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -219,9 +283,9 @@ public class insertProduct extends javax.swing.JPanel {
                             .addComponent(btnDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
                 .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
 
         btnNext.setBackground(new Color(255,153,102));

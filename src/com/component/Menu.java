@@ -1,5 +1,6 @@
 package com.component;
 
+import com.dataStorage.User;
 import com.event.EventMenuSelected;
 import com.model.model_Menu;
 import java.awt.Color;
@@ -11,6 +12,7 @@ import java.awt.RenderingHints;
 public class Menu extends javax.swing.JPanel {
     
     private EventMenuSelected event;
+    private User data;
     
     public void addEventMenuSelected(EventMenuSelected event) {
         this.event = event;
@@ -21,16 +23,21 @@ public class Menu extends javax.swing.JPanel {
         initComponents();
         setOpaque(false);
         listMenu1.setOpaque(false);
-        init();
-    }
-
-        private void init() {
+        data = User.getInstance();
+        boolean isAdmin = data.getIsAdmin();
         listMenu1.addItem(new model_Menu("home-white", "Dashboard", model_Menu.MenuType.MENU));
         listMenu1.addItem(new model_Menu("package-White", "Product List", model_Menu.MenuType.MENU));
         listMenu1.addItem(new model_Menu("stack-White", "Stack List", model_Menu.MenuType.MENU));
-        listMenu1.addItem(new model_Menu("MnWarehouse-White", "Warehouse List", model_Menu.MenuType.MENU));
-        listMenu1.addItem(new model_Menu("user-White", "List Admin", model_Menu.MenuType.MENU));
+        listMenu1.addItem(new model_Menu("MnWarehouse-White", "Warehouse List", model_Menu.MenuType.MENU));            
+        listMenu1.addItem(new model_Menu("customer-White", "Customer List", model_Menu.MenuType.MENU));
+        if(isAdmin == false){
+            listMenu1.addItem(new model_Menu("user-White", "UserList", model_Menu.MenuType.MENU));
+        }
+        listMenu1.addItem(new model_Menu("logout", "Logout", model_Menu.MenuType.MENU));
     }
+//
+//    private void init() {
+//    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

@@ -49,7 +49,7 @@ public class DatabaseConnection{
         return rs;
     }
 
-    public void queryRegister(String sQLString, Object... args) {
+    public void query(String title, String message, String sQLString, Object... args) {
         try (PreparedStatement pstmt = con.prepareStatement(sQLString)){
             for(int i = 0; i < args.length; i++) {
                 pstmt.setObject(i + 1, args[i]);
@@ -57,7 +57,7 @@ public class DatabaseConnection{
             int i = pstmt.executeUpdate();
             if(i>0){
                     Message ms = new Message();
-                    ms.setData(new Model_Message("Berhasil Register","Selamat, Akun telah dibuat \n Silahkan menunggu untuk di confirmasi oleh Owner!!!"));
+                    ms.setData(new Model_Message(title,message));
                     ms.eventOK(new ActionListener(){
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -73,7 +73,7 @@ public class DatabaseConnection{
         } catch (Exception e) {
             // TODO: handle exception
             Message ms = new Message();
-            ms.setData(new Model_Message("Error","Username Already Exists"));
+            ms.setData(new Model_Message("Error",e.getMessage()));
             ms.eventOK(new ActionListener(){
             @Override
                 public void actionPerformed(ActionEvent e) {
@@ -84,7 +84,7 @@ public class DatabaseConnection{
         }
     }
     
-    public void queryWarehouse(String sQLString, Object... args) {
+    public void queryACC(String title, String message, String sQLString, Object... args) {
         try (PreparedStatement pstmt = con.prepareStatement(sQLString)){
             for(int i = 0; i < args.length; i++) {
                 pstmt.setObject(i + 1, args[i]);
@@ -92,7 +92,7 @@ public class DatabaseConnection{
             int i = pstmt.executeUpdate();
             if(i>0){
                     Message ms = new Message();
-                    ms.setData(new Model_Message("Insert Berhasil","Berhasil menambahkan gudang baru"));
+                    ms.setData(new Model_Message(title,message));
                     ms.eventOK(new ActionListener(){
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -104,12 +104,18 @@ public class DatabaseConnection{
             }else{
                 JOptionPane.showMessageDialog(null,"Error");
             }
-            
-            
+
         } catch (Exception e) {
             // TODO: handle exception
-            JOptionPane.showMessageDialog(null, "Error : "+ e.getMessage(), 
-            "ExecuteUpdateError", JOptionPane.WARNING_MESSAGE);
+            Message ms = new Message();
+            ms.setData(new Model_Message("Error",e.getMessage()));
+            ms.eventOK(new ActionListener(){
+            @Override
+                public void actionPerformed(ActionEvent e) {
+                    GlassPanePopup.closePopupLast();                   
+                }
+            });
+            GlassPanePopup.showPopup(ms);
         }
     }
 }

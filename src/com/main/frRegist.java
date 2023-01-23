@@ -3,6 +3,7 @@ package com.main;
 import com.connection.DatabaseConnection;
 import com.glasspanepopup.model.Model_Message;
 import com.glasspanepopup.popup.Message;
+import com.glasspanepopup.popup.Message_Confirmation;
 import com.sun.jdi.connect.spi.Connection;
 import com.swing.MyTextField;
 import java.awt.Color;
@@ -12,6 +13,7 @@ import java.sql.PreparedStatement;
 import javax.swing.ImageIcon;
 import swinger.glasspanepopup.GlassPanePopup;
 import java.sql.ResultSet;
+import javax.swing.Action;
 
 
 
@@ -20,6 +22,8 @@ public class frRegist extends javax.swing.JFrame {
     public frRegist() {
         initComponents();
         GlassPanePopup.install(this);
+        
+        
     }
 
     @SuppressWarnings("unchecked")
@@ -143,26 +147,57 @@ public class frRegist extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRegistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistActionPerformed
-        Message ms = new Message();
-        String nama = txtName.getText();
-        String email = txtEmail.getText();
-        String username = txtUsername.getText();
-        String pass = txtPassword.getText();
-        String pass1 = txtPasswordRep.getText();
-        Connection con = null;
-        PreparedStatement pstmt = null;
-  
-        /*   Password Berbeda   */
-        if(pass1.equals(pass)){
+        try {
+            String nama = txtName.getText();
+            String email = txtEmail.getText();
+            String username = txtUsername.getText();
+            String pass = txtPassword.getText();
+            Connection con = null;
+            PreparedStatement pstmt = null;
+            ResultSet rs = null;
+            
             DatabaseConnection db = new DatabaseConnection();
-            String insertQuery = "INSERT INTO user(username, nama_User, email, password, isUsed, isAdmin) VALUES (?,?,?,?,?,?);";
-            db.queryRegister(insertQuery, username,nama,email,pass,0,1);
-        } else{
-            ms.setData(new Model_Message("Password", "Password Tidak Sesuai"));
+            if (nama.equals("") || email.equals("") || username.equals("") || pass.equals("") || txtPasswordRep.getText().equals("")) {
+                throw new Exception("Isikan semua field yang tersesdia atau pastikan data yang anda masukkan benar");
+            }
+            if(!email.endsWith("@gmail.com")){
+                throw new Exception("Format email yang dimasukkan salah, pastikan menggunakan domain @gmail.com");
+            }
+            if (!txtPasswordRep.getText().equals(pass)) {
+                throw new Exception("Password Tidak Sesuai");
+            }
+            String cek = "SELECT username FROM user WHERE username = '" + username + "'";
+            rs = db.getData(cek);
+            if (rs.next()){
+                Message ms = new Message();
+                ms.setData(new Model_Message("Gagal Register", "Username User Telah Terpakai, silahkan menggunakan username yang lain"));
+                ms.eventOK(new ActionListener(){
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        GlassPanePopup.closePopupLast();
+                    }
+                });
+                GlassPanePopup.showPopup(ms);
+            }else{
+                Message_Confirmation msc = new Message_Confirmation();
+                msc.setData(new Model_Message("Konfirmasi", "Apakah anda yakin ?"));
+                msc.eventSUBMIT(new ActionListener(){
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        GlassPanePopup.closePopupLast();
+                        String insertQuery = "INSERT INTO user(username, nama_User, email, password, isUsed, isAdmin) VALUES (?,?,?,?,?,?);";
+                        db.query("Berhasil Register", "Selamat, Akun telah dibuat \n Silahkan menunggu untuk di confirmasi oleh Owner!!!", insertQuery, username,nama,email,pass,0,1);
+                    }
+                });
+                GlassPanePopup.showPopup(msc);
+            }   
+        } catch (Exception e) {
+            Message ms = new Message();
+            ms.setData(new Model_Message("Error", e.getMessage()));
             ms.eventOK(new ActionListener(){
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                     GlassPanePopup.closePopupLast();
+                    GlassPanePopup.closePopupLast();
                 }
             });
             GlassPanePopup.showPopup(ms);

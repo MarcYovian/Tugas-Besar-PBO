@@ -1,56 +1,112 @@
 package com.glasspanepopup.Stack;
 
+import com.connection.DatabaseConnection;
 import com.frame.Form_Stack;
 import com.glasspanepopup.model.Model_Message;
 import com.glasspanepopup.popup.Message;
 import com.glasspanepopup.popup.Message_Confirmation;
 import com.main.Main;
+import com.sun.jdi.connect.spi.Connection;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import static java.lang.Integer.numberOfLeadingZeros;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import swinger.glasspanepopup.GlassPanePopup;
 
 public class insertStack extends javax.swing.JPanel {
-
+    ResultSet rs = null;
+                    
+    DatabaseConnection db = new DatabaseConnection();
     public insertStack() {
         initComponents();
 //        setOpaque(false);
-        
+
+        txtKapasitas.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!((c >= '0') && (c <= '9') || (c == KeyEvent.VK_BACK_SPACE) || (c == KeyEvent.VK_DELETE))) {
+                    e.consume();
+                }
+            }
+        });
+        cbGudang();
         btnSubmit.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     String namaGudang = (String) cbNamGudang.getSelectedItem();
+                    String namaRak = txtNamaRak.getText();
                     int Kapasitas = Integer.parseInt(txtKapasitas.getText());
-                    if(namaGudang.equals("") || Kapasitas <= 0){
-                        throw new Exception();
-                    }
-                    System.out.println(namaGudang + " " + Kapasitas );
-                    
-                    Message_Confirmation msc = new Message_Confirmation();
-                    msc.setData(new Model_Message("Konfirmasi", "Apakah anda yakin ingin menambahkan rak baru ke dalam Gudang ?"));
-                    msc.eventSUBMIT(new ActionListener(){
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            GlassPanePopup.closePopupLast();
-                            // to do : insert query to database here & check if stack already exists
+                    Connection con = null;
+                    PreparedStatement pstmt = null;
 
-                            System.out.println(namaGudang + " " + Kapasitas);
-                            Form_Stack stack = new Form_Stack();
-                            Main main = (Main) SwingUtilities.getWindowAncestor(insertStack.this);
-                            main.setForm(stack);
+                    String setId = "SELECT id_Gudang, nama_Gudang FROM gudang WHERE nama_Gudang = '" + namaGudang + "'";
+                    rs = db.getData(setId);
+                    int id = 0;
+                    try {
+                        while (rs.next()) {
+                            id = rs.getInt("id_Gudang");
                         }
-                    });
-                    GlassPanePopup.showPopup(msc);
-                    
-                    //switch panel Stack
-                    
+                    } catch (SQLException ex) {
+                        Logger.getLogger(insertStack.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    String cekQuery = "SELECT id_Gudang, id_Rak FROM rak_gudang WHERE id_Gudang = '"+ id + "' AND nama_Rak = '" + namaRak + "'" ;
+                    rs = db.getData(cekQuery);
+                    if(namaGudang.equals("") || Kapasitas <= 0 || namaRak.equals("")){
+                        throw new Exception("Isikan semua field yang tersedia atau pastikan data yang anda masukkan benar");
+                    }else if(rs.next()){
+                        Message ms = new Message();
+                        ms.setData(new Model_Message("Error", "Nama stack pada gudang yang anda pilih sudah tersedia"));
+                        ms.eventOK(new ActionListener(){
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                GlassPanePopup.closePopupLast();
+                            }
+                        });
+                        GlassPanePopup.showPopup(ms);
+                    }else{
+                        Message_Confirmation msc = new Message_Confirmation();
+                        msc.setData(new Model_Message("Konfimasi", "Apakah anda yakin ingin menambah Rak Baru untuk gudang yang anda Pilih ?"));
+                        msc.eventSUBMIT(new ActionListener(){
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                GlassPanePopup.closePopupLast();
+                                String setId = "SELECT id_Gudang, nama_Gudang FROM gudang WHERE nama_Gudang = '" + namaGudang + "'";
+                                rs = db.getData(setId);
+                                int id = 0;
+                                try {
+                                    while (rs.next()) {
+                                        id = rs.getInt("id_Gudang");
+                                    }
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(insertStack.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+
+                                String insertQuery = "INSERT INTO rak_gudang (id_Gudang, nama_Rak, Kapasitas, isFull) VALUES (?,?,?,?) ";
+                                db.query("Berhasil", "Berhasil Menambah Rak Baru", insertQuery, id, namaRak, Kapasitas, 0);
+                                
+                                //switch panel Stack
+                                Form_Stack s = new Form_Stack();
+                                Main main = (Main) SwingUtilities.getWindowAncestor(insertStack.this);
+                                main.setForm(s);
+                            }
+                        });
+                        GlassPanePopup.showPopup(msc);
+                    }
                 } catch (Exception ex){
                     Message ms = new Message();
-                    ms.setData(new Model_Message("Error", "Isikan semua field yang tersedia atau pastikan data yang anda masukkan benar"));
+                    ms.setData(new Model_Message("Error", ex.getMessage()));
                     ms.eventOK(new ActionListener(){
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -60,10 +116,32 @@ public class insertStack extends javax.swing.JPanel {
                     GlassPanePopup.showPopup(ms);
                 }
             }
-            
         });
     }
 
+    private void cbGudang(){
+        DatabaseConnection db = new DatabaseConnection();
+        ResultSet rs = null;
+        
+        try {
+            String cek = "SELECT * FROM gudang" ;
+            rs = db.getData(cek);
+            while (rs.next()) {                
+                String nama = rs.getString("nama_Gudang");
+                cbNamGudang.addItem(nama);
+            }
+        } catch (Exception e) {
+            Message ms = new Message();
+            ms.setData(new Model_Message("Error", e.getMessage()));
+            ms.eventOK(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    GlassPanePopup.closePopupLast();
+                }
+            });
+            GlassPanePopup.showPopup(ms);
+        }
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -73,6 +151,7 @@ public class insertStack extends javax.swing.JPanel {
         cbNamGudang = new com.swing.Combobox();
         txtKapasitas = new com.swing.MyTextField();
         btnSubmit = new com.swing.MyButton();
+        txtNamaRak = new com.swing.MyTextField();
 
         setBackground(new java.awt.Color(252, 251, 246));
 
@@ -87,14 +166,13 @@ public class insertStack extends javax.swing.JPanel {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 260, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 8, Short.MAX_VALUE)
         );
 
-        cbNamGudang.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Test 1", "halo semua" }));
         cbNamGudang.setSelectedIndex(-1);
         cbNamGudang.setLabeText("Nama Gudang");
 
@@ -102,23 +180,26 @@ public class insertStack extends javax.swing.JPanel {
 
         btnSubmit.setText("Submit");
 
+        txtNamaRak.setHint("Nama Rak");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(245, Short.MAX_VALUE)
-                .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(123, 123, 123))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cbNamGudang, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtKapasitas, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, 0)
+                        .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addContainerGap(100, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtKapasitas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbNamGudang, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNamaRak, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(100, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -127,13 +208,15 @@ public class insertStack extends javax.swing.JPanel {
                 .addComponent(jLabel5)
                 .addGap(5, 5, 5)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(60, 60, 60)
+                .addGap(50, 50, 50)
                 .addComponent(cbNamGudang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(54, 54, 54)
+                .addGap(48, 48, 48)
+                .addComponent(txtNamaRak, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(52, 52, 52)
                 .addComponent(txtKapasitas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 131, Short.MAX_VALUE)
+                .addGap(50, 50, 50)
                 .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(98, Short.MAX_VALUE))
+                .addContainerGap(88, Short.MAX_VALUE))
         );
 
         jLabel5.setHorizontalAlignment(SwingConstants.CENTER);
@@ -152,5 +235,6 @@ public class insertStack extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private com.swing.MyTextField txtKapasitas;
+    private com.swing.MyTextField txtNamaRak;
     // End of variables declaration//GEN-END:variables
 }
