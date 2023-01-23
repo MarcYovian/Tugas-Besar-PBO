@@ -25,10 +25,16 @@ public class DatabaseConnection{
             );
             stmt = con.createStatement();
         } catch(Exception e){
-            JOptionPane.showMessageDialog(null,""+e.getMessage(), 
-            "JDBCDriver Error", JOptionPane.WARNING_MESSAGE);
+            Message ms = new Message();
+            ms.setData(new Model_Message("JDBCDriver Error",e.getMessage()));
+            ms.eventOK(new ActionListener(){
+            @Override
+                public void actionPerformed(ActionEvent e) {
+                    GlassPanePopup.closePopupLast();                   
+                }
+            });
+            GlassPanePopup.showPopup(ms);
         }
-
     }
 
        
